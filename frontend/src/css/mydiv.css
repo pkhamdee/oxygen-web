@@ -1,0 +1,30 @@
+.mydiv {
+  flex-direction: column;
+  display: block;
+}
+
+.background {
+  background-color: white;
+}
+
+.menubar {
+  position: relative;
+  display: block
+}
+
+.Footer {
+    height: 70px;
+    position: fixed;
+    bottom: 0;
+    background: #201D1E;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.footer {
+    padding: inherit;
+}
+
+.menu-item{
+    font-size: large;
+}

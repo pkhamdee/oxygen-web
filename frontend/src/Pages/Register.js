@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Card } from "antd";
+import SideBar from "../components/sidebar";
+import "../css/mydiv.css"
 
 
 const layout = {
@@ -34,6 +36,7 @@ const Register = () => {
   return (
     <Card>
       <h1>Register</h1>
+      <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
       <Form
         {...layout}
         name="nest-messages"

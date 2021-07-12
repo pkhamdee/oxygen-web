@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useTable, useRowSelect } from 'react-table'
-
+import SideBar from "../components/sidebar";
 import makeData from '../components/makeData'
+import "../css/mydiv.css"
 
 const Styles = styled.div`
   padding: 1rem;
@@ -94,26 +95,29 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <>
+      <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
       <table {...getTableProps()}>
         <thead>
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+              {headerGroup.headers.map((column) => (
+                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
           {rows.slice(0, 10).map((row, i) => {
-            prepareRow(row)
+            prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                {row.cells.map((cell) => {
+                  return (
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  );
                 })}
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
@@ -123,8 +127,8 @@ function Table({ columns, data }) {
           {JSON.stringify(
             {
               selectedRowIds: selectedRowIds,
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original
+              "selectedFlatRows[].original": selectedFlatRows.map(
+                (d) => d.original
               ),
             },
             null,
@@ -133,7 +137,7 @@ function Table({ columns, data }) {
         </code>
       </pre>
     </>
-  )
+  );
 }
 
 function App() {
