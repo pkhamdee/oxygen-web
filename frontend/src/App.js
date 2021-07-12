@@ -5,6 +5,9 @@ import Landing from  './Pages/Landing';
 import Give from './Pages/Give';
 import Return from "./Pages/Return";
 import Dashboard from "./Pages/Dashboard";
+import AddMachine from "./Pages/AddMachine";
+import Register from "./Pages/Register";
+import Login from "./Pages/Login";
 
 function App() {
   return (
@@ -13,18 +16,26 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-        
           <Route path="/give">
             <Give />
           </Route>
           <Route path="/return">
             <Return />
           </Route>
-          <Route path="/dashboard">
-            <Dashboard />
+          <Route path="/landing">
+            <Landing />
+          </Route>
+          <Route path="/addmachine">
+            <AddMachine />
+          </Route>
+          <Route path="/register">
+            <Register />
+          </Route>
+          <Route path="/login">
+            <Login />
           </Route>
           <Route path="/">
-            <Landing />
+            <Dashboard />
           </Route>
         </Switch>
       </div>
