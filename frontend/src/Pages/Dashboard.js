@@ -8,10 +8,24 @@ import "../css/widget.css";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Redirect, Link } from "react-router-dom";
+import axios from "axios";
 
 
 
 class Dashboard extends React.Component {
+  state = {
+    devices: []
+  }
+
+  componentDidMount() {
+    axios.get(`http://localhost:8080/devices`)
+      .then(res => {
+        const devices = res.data;
+        this.setState({ devices });
+        console.log(devices);
+      })
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +91,7 @@ class Dashboard extends React.Component {
             <Button
               variant={!available ? "outline-light" : "outline-error"}
               size="sm"
-              onClick="returnFunction()"
+//              onClick="returnFunction()"
               disabled={available}
             >
               Return
