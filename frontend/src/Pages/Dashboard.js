@@ -124,9 +124,7 @@ class Dashboard extends React.Component {
                       <p> Patient Summary </p>
                     </div>
                     <div class="icon">
-                      <i class="fa fa-patient" aria-hidden="true"></i>
                       <h1 class="fonticon">Patient</h1>
-                    
                     </div>
                   </div>
                 </div>
@@ -137,7 +135,6 @@ class Dashboard extends React.Component {
                       <p> Available/Total </p>
                     </div>
                     <div class="icon">
-                      <i class="fa fa-engine" aria-hidden="false"></i>
                       <h1 class="fonticon">Oxygen</h1>
                     </div>
                   </div>

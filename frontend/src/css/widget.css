@@ -29,30 +29,14 @@ background:#eee;
     text-align: left;
 }
 .card-box p {
-    font-size: 15px;
+    font-size: 18px;
 }
 .card-box .icon {
     position: absolute;
-    top: auto;
-    bottom: 5px;
+    bottom: 0px;
     right: 5px;
     z-index: 0;
-    font-size: 72px;
     color: rgba(0, 0, 0, 0.15);
-}
-.card-box .card-box-footer {
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-    text-align: center;
-    padding: 3px 0;
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.1);
-    width: 100%;
-    text-decoration: none;
-}
-.card-box:hover .card-box-footer {
-    background: rgba(0, 0, 0, 0.3);
 }
 .bg-blue {
     background-color: #00c0ef !important;
@@ -68,11 +52,10 @@ background:#eee;
 }
 
 .fonticon{
-    vertical-align: bottom;
-
+    bottom: 0px;
     right: 5px;
     z-index: 0;
-    font-size: 84px;
+    font-size: 72px;
     color: rgba(0, 0, 0, 0.15);
 }
 
