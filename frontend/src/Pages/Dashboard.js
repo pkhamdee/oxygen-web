@@ -77,7 +77,7 @@ class Dashboard extends React.Component {
             <Button
               variant={!available ? "outline-light" : "outline-error"}
               size="sm"
-              onclick="returnFunction()"
+              onClick="returnFunction()"
               disabled={available}
             >
               Return
@@ -115,27 +115,27 @@ class Dashboard extends React.Component {
         <Content className="background">
           <br></br>
           <div>
-            <div class="container">
-              <div class="row">
-                <div class="col-sm">
-                  <div class="card-box bg-blue">
-                    <div class="inner">
+            <div className="container">
+              <div className="row">
+                <div className="col-sm">
+                  <div className="card-box bg-blue">
+                    <div className="inner">
                       <h3> 13436 </h3>
                       <p> Patient Summary </p>
                     </div>
-                    <div class="icon">
-                      <h1 class="fonticon">Patient</h1>
+                    <div className="icon">
+                      <h1 className="fonticon">Patient</h1>
                     </div>
                   </div>
                 </div>
-                <div class="col-sm">
-                  <div class="card-box bg-green">
-                    <div class="inner">
+                <div className="col-sm">
+                  <div className="card-box bg-green">
+                    <div className="inner">
                       <h3> 10/300 </h3>
                       <p> Available/Total </p>
                     </div>
-                    <div class="icon">
-                      <h1 class="fonticon">Oxygen</h1>
+                    <div className="icon">
+                      <h1 className="fonticon">Oxygen</h1>
                     </div>
                   </div>
                 </div>
