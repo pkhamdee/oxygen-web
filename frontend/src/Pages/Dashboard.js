@@ -18,11 +18,12 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://localhost:8080/devices`)
+    axios.get('http://localhost:8080/devices')
       .then(res => {
         const devices = res.data;
         this.setState({ devices });
-        console.log(devices);
+        console.log('td' + typeof this.state.devices);
+        console.log('d' + this.state.devices);
       })
   }
 
@@ -31,28 +32,28 @@ class Dashboard extends React.Component {
     this.state = {
       machines: [
         {
-          id: 1,
-          serialnumber: "aaaaaaaaaa",
-          phonenum: "0000000000",
-          available: true,
+          deviceId: 1,//deviceId
+          barcode: "aaaaaaaaaa",//barcode
+          name: "0000000000",//name
+          status: true,//status == available or inused
         },
         {
-          id: 2,
-          serialnumber: "bbbbbbbbbb",
-          phonenum: "1111111111",
-          available: true,
+          deviceId: 2,
+          barcode: "bbbbbbbbbb",
+          name: "1111111111",
+          status: true,
         },
         {
-          id: 3,
-          serialnumber: "cccccccccc",
-          phonenum: "2222222222",
-          available: false,
+          deviceId: 3,
+          barcode: "cccccccccc",
+          name: "2222222222",
+          status: false,
         },
         {
-          id: 4,
-          serialnumber: "dddddddddd",
-          phonenum: "3333333333",
-          available: true,
+          deviceId: 4,
+          barcode: "dddddddddd",
+          name: "3333333333",
+          status: true,
         },
       ],
       destination: "",
@@ -62,7 +63,7 @@ class Dashboard extends React.Component {
   renderTableHeader() {
     let header = Object.keys(this.state.machines[0]);
     return header.map((key, index) => {
-      if (key != "available") {
+      if (key != "status") {
         return <th key={index}>{key.toUpperCase()}</th>;
       }
     });
@@ -73,26 +74,28 @@ class Dashboard extends React.Component {
   };
 
   renderTableData() {
+    console.log('tm' + typeof this.state.machines);
+    console.log('m' + this.state.machines);
     return this.state.machines.map((machine, index) => {
-      const { id, serialnumber, phonenum, available } = machine; //destructuring
+      const { deviceId, barcode, name, status } = machine; //destructuring
       return (
-        <tr key={id} bgcolor={!available ? "grey" : "white"}>
+        <tr key={deviceId} bgcolor={!status ? "grey" : "white"}>
           <td>
-            <font color={available ? "grey" : "white"}>{id}</font>
+            <font color={status ? "grey" : "white"}>{deviceId}</font>
           </td>
           <td>
-            <font color={available ? "grey" : "white"}>{serialnumber}</font>
+            <font color={status ? "grey" : "white"}>{barcode}</font>
           </td>
           <td>
-            <font color={available ? "grey" : "white"}>{phonenum}</font>
+            <font color={status ? "grey" : "white"}>{name}</font>
           </td>
           <td>
             {" "}
             <Button
-              variant={!available ? "outline-light" : "outline-error"}
+              variant={!status ? "outline-light" : "outline-error"}
               size="sm"
 //              onClick="returnFunction()"
-              disabled={available}
+              disabled={status}
             >
               Return
             </Button>{" "}
@@ -100,12 +103,12 @@ class Dashboard extends React.Component {
           <td>
             {" "}
             <Button
-              variant={available ? "outline-success" : "outline-error"}
+              variant={status ? "outline-success" : "outline-error"}
               size="sm"
               onClick={() => {
                 this.giveHandler();
               }}
-              disabled={!available}
+              disabled={!status}
             >
               Give
             </Button>{" "}
