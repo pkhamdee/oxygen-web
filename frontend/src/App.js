@@ -8,6 +8,7 @@ import Dashboard from "./Pages/Dashboard";
 import AddMachine from "./Pages/AddMachine";
 import Register from "./Pages/Register";
 import Login from "./Pages/Login";
+import Admin from "./Pages/Admin";
 
 function App() {
   return (
@@ -33,6 +34,9 @@ function App() {
           </Route>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/admin">
+            <Admin />
           </Route>
           <Route path="/">
             <Dashboard />

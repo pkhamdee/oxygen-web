@@ -67,3 +67,12 @@ background:#eee;
     background-color: #d9534f !important;
 }
 
+.fonticon{
+    vertical-align: bottom;
+
+    right: 5px;
+    z-index: 0;
+    font-size: 84px;
+    color: rgba(0, 0, 0, 0.15);
+}
+

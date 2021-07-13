@@ -18,6 +18,10 @@ export default props => {
         เพิ่มเครื่อง
       </a>
 
+      <a className="menu-item" href="/Admin">
+        ตั้งค่าผู้ใช้งาน
+      </a>
+
       
     </Menu>
   );

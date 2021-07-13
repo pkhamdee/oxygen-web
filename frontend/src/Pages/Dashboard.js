@@ -10,6 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Redirect, Link } from "react-router-dom";
 
 
+
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -124,7 +125,8 @@ class Dashboard extends React.Component {
                     </div>
                     <div class="icon">
                       <i class="fa fa-patient" aria-hidden="true"></i>
-                      <img alt="Patients" class="image" />
+                      <h1 class="fonticon">Patient</h1>
+                    
                     </div>
                   </div>
                 </div>
@@ -135,8 +137,8 @@ class Dashboard extends React.Component {
                       <p> Available/Total </p>
                     </div>
                     <div class="icon">
-                      <i class="fa fa-engine" aria-hidden="true"></i>
-                      <img alt="Oxygen" class="image" />
+                      <i class="fa fa-engine" aria-hidden="false"></i>
+                      <h1 class="fonticon">Oxygen</h1>
                     </div>
                   </div>
                 </div>
