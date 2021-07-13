@@ -111,16 +111,12 @@ const EditableRow = ({ index, ...props }) => {
         {
           title: 'name',
           dataIndex: 'name',
-          width: '30%',
+          width: '50%',
           editable: true,
         },
         {
-          title: 'age',
-          dataIndex: 'age',
-        },
-        {
-          title: 'address',
-          dataIndex: 'address',
+          title: 'phone number',
+          dataIndex: 'phone',
         },
         {
           title: 'operation',
@@ -138,14 +134,12 @@ const EditableRow = ({ index, ...props }) => {
           {
             key: '0',
             name: 'Edward King 0',
-            age: '32',
-            address: 'London, Park Lane no. 0',
+            phone: '0987876543',
           },
           {
             key: '1',
             name: 'Edward King 1',
-            age: '32',
-            address: 'London, Park Lane no. 1',
+            phone: '0765453234',
           },
         ],
         count: 2,
