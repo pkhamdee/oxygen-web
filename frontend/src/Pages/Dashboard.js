@@ -10,16 +10,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 
+
+
 class Dashboard extends React.Component {
   state = {
     devices: [],
   };
 
   componentDidMount() {
+
     axios.get("http://localhost:8080/devices").then((res) => {
       const devices = res.data.content;
       this.setState({ devices });
     });
+
+
   }
 
   constructor(props) {
@@ -29,61 +34,60 @@ class Dashboard extends React.Component {
       this.state = devices;
     });
   }
-  //
-  //  renderTableHeader() {
-  //    console.log('Header');
-  //    console.log(this.state.devices);
-  //    let header = Object.keys(this.state.devices);
-  //    return header.map((key, index) => {
-  //      if (key != "status") {
-  //        return <th key={index}>{key.toUpperCase()}</th>;
-  //      }
-  //    });
-  //  }
-  //
+
+
+
+
   renderTableHeader() {
-    console.log("Head");
     let key = this.state.devices;
     let header = key.map((device, index) => {
-      let keyArray = Object.keys(device);
-      return keyArray.map((header, sindex) => {
-        if (header != "status") {
-          return <th key={sindex}> {header.toUpperCase()} </th>;
-        }
-      });
+        let keyArray = Object.keys(device);
+        return keyArray.map((header, sindex) =>
+        {   switch (header ){
+                case "deviceId":
+                    return <th key={sindex}> # </th>;
+                    break;
+                case "barcode":
+                    return <th key={sindex}> หมายเลขเครื่อง </th>;
+                    break;
+                case "name":
+                    return <th key={sindex}> ผู้ติดต่อ </th>;
+                    break;
+            }
+        });
+
     });
     return header[0]; // will be fix
   }
 
-  giveHandler = async (number) => {
-    // console.log(number)
-    await this.setState({ destination: "give", chosenSerial: number });
-    console.log(this.state.chosenSerial);
+  giveHandler = () => {
+    this.setState({ destination: "give" });
   };
 
   renderTableData() {
-    console.log("Data");
+
     return this.state.devices.map((device, index) => {
       const { length, deviceId, barcode, name, status } = device; //destructuring
       return (
-        <tr key={deviceId} bgcolor={!status ? "grey" : "white"}>
+        <tr key={deviceId} bgcolor={(status == 2) ? "grey" : "white"}>
           <td>
-            <font color={status ? "grey" : "white"}>{deviceId}</font>
+            <font color={(status == 4) ? "grey" : "white"}>{deviceId}</font>
           </td>
           <td>
-            <font color={status ? "grey" : "white"}>{barcode}</font>
+            <font color={(status == 4) ? "grey" : "white"}>{name}</font>
           </td>
           <td>
-            <font color={status ? "grey" : "white"}>{name}</font>
+            <font color={(status == 4) ? "grey" : "white"}>{barcode}</font>
           </td>
           <td>
             {" "}
             <Button
-              variant={!status ? "outline-light" : "outline-error"}
+              variant={(status == 2) ? "outline-light" : "outline-error"}
               size="sm"
-              // onClick="returnFunction()"
-              // disabled={available}
-              value={deviceId}
+
+//              onClick="returnFunction()"
+              disabled={(status == 4)}
+
             >
               Return
             </Button>{" "}
@@ -91,13 +95,14 @@ class Dashboard extends React.Component {
           <td>
             {" "}
             <Button
-              variant={status ? "outline-success" : "outline-error"}
+              variant={(status == 4) ? "outline-success" : "outline-error"}
               size="sm"
-              value={deviceId}
+
               onClick={() => {
-                this.giveHandler(deviceId);
+                this.giveHandler();
+
               }}
-              disabled={!status}
+              disabled={(status == 2)}
             >
               Give
             </Button>{" "}
@@ -108,50 +113,57 @@ class Dashboard extends React.Component {
   }
 
   render() {
+
     console.log(sessionStorage.getItem("login"));
     if (sessionStorage.getItem("login") !== "true") {
       console.log(sessionStorage.getItem("login"));
       return <Redirect push to="/login" />;
     }
 
+
     if (this.state.destination == "give") {
-      return <Redirect to={`/give/${this.state.chosenSerial}`} />;
+      return <Redirect push to="/give" />;
     }
 
     return (
-      // <Layout>
-      //   <Header className="background">
-      //     {/* <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
-      //   </Header>
+      <Layout>
+        <Header className="background">
+          <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
+        </Header>
 
-      //   <Content className="background">
-      //     <br></br>
-      <div>
-        <div className="container">
-          <div className="row">
-            <div className="col-sm">
-              <div className="card-box bg-blue">
-                <div className="inner">
-                  <h3> 13436 </h3>
-                  <p> Patient Summary </p>
+
+        <Content className="background">
+          <br></br>
+          <div>
+            <div className="container">
+              <div className="row">
+                <div className="col-sm">
+                  <div className="card-box bg-blue">
+                    <div className="inner">
+                      <h3> 13436 </h3>
+                      <p> จำนวนผู้ป่วยที่ได้รับการช่วยเหลือ </p>
+                    </div>
+                    <div className="icon">
+                      <h1 className="fonticon">Patient</h1>
+                    </div>
+                  </div>
                 </div>
-                <div className="icon">
-                  <h1 className="fonticon">Patient</h1>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm">
-              <div className="card-box bg-green">
-                <div className="inner">
-                  <h3> 10/{this.state.devices.length} </h3>
-                  <p> Available/Total </p>
-                </div>
-                <div className="icon">
-                  <h1 className="fonticon">Oxygen</h1>
+                <div className="col-sm">
+                  <div className="card-box bg-green">
+                    <div className="inner">
+                      <h3> 10/{this.state.devices.length} </h3>
+                      <p> จำนวนเครื่องว่าง/ทั้งหมด </p>
+                    </div>
+                    <div className="icon">
+                      <h1 className="fonticon">Oxygen</h1>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
           </div>
+
         </div>
         <div style={{ display: "flex" }}></div>
         <table id="machines">
@@ -161,8 +173,10 @@ class Dashboard extends React.Component {
           </tbody>
         </table>
       </div>
-      //   </Content>
-      // </Layout>
+
+        </Content>
+      </Layout>
+
     );
   }
 }
