@@ -30,6 +30,7 @@ import {
 import SideBar from "../components/sidebar";
 import "../css/mydiv.css";
 import { Header, Body, Content } from "antd/lib/layout/layout";
+import { Redirect, Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -63,10 +64,18 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-const Give = () => {
+const Give = (props) => {
+  console.log(props.match.params.chosenSerial);
+  const serial = props.match.params.chosenSerial;
   const onFinish = (values) => {
     console.log(values);
   };
+
+  console.log(sessionStorage.getItem("login"));
+
+  if (sessionStorage.getItem("login") !== "true") {
+    return <Redirect push to="/login" />;
+  }
 
   return (
     // <Layout>
@@ -81,7 +90,7 @@ const Give = () => {
         <Card>
           <h1>ฟอร์ม</h1>
           <h5>*กรุณากรอกข้อมูลของผู้ป่วยตามจริง</h5>
-          <h8>Serial Number: A101COVID</h8>
+          <h6>เลขเครื่อง: {serial}</h6>
           <Form
             {...layout}
             name="nest-messages"

@@ -8,6 +8,7 @@ import { Header, Body, Content } from "antd/lib/layout/layout";
 
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { Redirect, Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -35,6 +36,10 @@ const AddMachine = () => {
   const onFinish = (values) => {
     console.log(values);
   };
+
+  if (sessionStorage.getItem("login") !== "true") {
+    return <Redirect push to="/login" />;
+  }
 
   return (
     // <Layout>

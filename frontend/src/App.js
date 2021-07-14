@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // import Landing from './Pages/Landing';
-import Landing from  './Pages/Landing';
-import Give from './Pages/Give';
+import Landing from "./Pages/Landing";
+import Give from "./Pages/Give";
 import Return from "./Pages/Return";
 import Dashboard from "./Pages/Dashboard";
 import AddMachine from "./Pages/AddMachine";
@@ -23,9 +23,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <div>
             <Navbar />
-          <Route path="/give">
-            <Give />
-          </Route>
+          <Route path="/give/:chosenSerial" exact={true} component={Give} />
           <Route path="/return">
             <Return />
           </Route>

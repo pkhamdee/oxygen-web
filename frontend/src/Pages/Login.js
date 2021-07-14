@@ -4,7 +4,8 @@ import "antd/dist/antd.css";
 import { Form, Input, Button, Checkbox } from "antd";
 import "../css/mydiv.css";
 import { Header, Body, Content } from "antd/lib/layout/layout";
-
+import { Redirect, Link } from "react-router-dom";
+import axios from "axios";
 
 const tailLayout = {
   wrapperCol: {
@@ -13,77 +14,102 @@ const tailLayout = {
   },
 };
 
+class Login extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      redirect: false,
+      user: "",
+      password: "",
+    };
+  }
 
-const Login = () => {
-  const onFinish = (values) => {
+  onFinish = (values) => {
     console.log("Success:", values);
+    // console.log("In finish handler");
+    sessionStorage.setItem("login", "true");
+    console.log(values.username);
+    console.log(values.password);
+    // console.log(sessionStorage.getItem("login"));
+    this.setState({ redirect: true });
   };
 
-  const onFinishFailed = (errorInfo) => {
+  onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
+  render() {
+    if (this.state.redirect == true) {
+      console.log(sessionStorage.getItem("login"));
+      console.log(this.state.redirect);
+      // return <Redirect push to="/dashboard" />;
+    }
 
-  return (
-    <div>
-      <h1>Login</h1>
-      <Form
-        name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[
-            {
-              required: true,
-              message: "Please input your username!",
-            },
-          ]}
+    return (
+      <div>
+        <h1>Login</h1>
+        <Form
+          name="basic"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={this.onFinish}
+          onFinishFailed={this.onFinishFailed}
         >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
-
-        <Form.Item {...tailLayout}>
-          <Button htmlType="submit" type="primary">
-            Login
-          </Button>
-          <Button
-            htmlType="button"
-            style={{
-              margin: "0 8px",
-            }}
-            onClick={() => console.log("pressed")}
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Please input your username!",
+              },
+            ]}
           >
-            Register
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-};
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item {...tailLayout}>
+            <Button
+              htmlType="submit"
+              type="primary"
+              onClick={() => this.loginHandler}
+            >
+              Login
+            </Button>
+            <Button
+              htmlType="button"
+              style={{
+                margin: "0 8px",
+              }}
+              onClick={() => console.log("pressed")}
+            >
+              Register
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  }
+}
 
 export default Login;
