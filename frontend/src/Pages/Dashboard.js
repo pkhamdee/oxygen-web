@@ -14,30 +14,29 @@ import axios from "axios";
 
 class Dashboard extends React.Component {
   state = {
-    devices: []
-  }
+    devices: [],
+  };
 
   componentDidMount() {
-    axios.get('http://localhost:8080/devices')
-      .then(res => {
-        const devices = res.data.content;
-        this.setState({ devices });
-      })
-//    axios.get('http://localhost:8080/users')
-//      .then(res => {
-//        const users = res.data.content;
-//        this.setState({ users });
-//      })
+
+    axios.get("http://localhost:8080/devices").then((res) => {
+      const devices = res.data.content;
+      this.setState({ devices });
+    });
+
+
   }
 
   constructor(props) {
     super(props);
-    axios.get('http://localhost:8080/devices')
-      .then(res => {
-        const devices = res.data.content;
-        this.state = devices;
-      })
+    axios.get("http://localhost:8080/devices").then((res) => {
+      const devices = res.data.content;
+      this.state = devices;
+    });
   }
+
+
+
 
   renderTableHeader() {
     let key = this.state.devices;
@@ -56,6 +55,7 @@ class Dashboard extends React.Component {
                     break;
             }
         });
+
     });
     return header[0]; // will be fix
   }
@@ -65,8 +65,9 @@ class Dashboard extends React.Component {
   };
 
   renderTableData() {
+
     return this.state.devices.map((device, index) => {
-      const { length, deviceId, barcode, name, status } = device ; //destructuring
+      const { length, deviceId, barcode, name, status } = device; //destructuring
       return (
         <tr key={deviceId} bgcolor={(status == 2) ? "grey" : "white"}>
           <td>
@@ -83,8 +84,10 @@ class Dashboard extends React.Component {
             <Button
               variant={(status == 2) ? "outline-light" : "outline-error"}
               size="sm"
+
 //              onClick="returnFunction()"
               disabled={(status == 4)}
+
             >
               Return
             </Button>{" "}
@@ -94,8 +97,10 @@ class Dashboard extends React.Component {
             <Button
               variant={(status == 4) ? "outline-success" : "outline-error"}
               size="sm"
+
               onClick={() => {
                 this.giveHandler();
+
               }}
               disabled={(status == 2)}
             >
@@ -108,6 +113,14 @@ class Dashboard extends React.Component {
   }
 
   render() {
+
+    console.log(sessionStorage.getItem("login"));
+    if (sessionStorage.getItem("login") !== "true") {
+      console.log(sessionStorage.getItem("login"));
+      return <Redirect push to="/login" />;
+    }
+
+
     if (this.state.destination == "give") {
       return <Redirect push to="/give" />;
     }
@@ -117,6 +130,7 @@ class Dashboard extends React.Component {
         <Header className="background">
           <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
         </Header>
+
 
         <Content className="background">
           <br></br>
@@ -144,19 +158,25 @@ class Dashboard extends React.Component {
                       <h1 className="fonticon">Oxygen</h1>
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
-            <div style={{ display: "flex" }}></div>
-            <table id="machines">
-              <tbody>
-                <tr>{this.renderTableHeader()}</tr>
-                {this.renderTableData()}
-              </tbody>
-            </table>
           </div>
+
+        </div>
+        <div style={{ display: "flex" }}></div>
+        <table id="machines">
+          <tbody>
+            <tr>{this.renderTableHeader()}</tr>
+            {this.renderTableData()}
+          </tbody>
+        </table>
+      </div>
+
         </Content>
       </Layout>
+
     );
   }
 }

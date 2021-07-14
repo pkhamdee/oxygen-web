@@ -32,74 +32,93 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-const AddMachine = () => {
-  const onFinish = (values) => {
-    console.log(values);
-  };
-
-  if (sessionStorage.getItem("login") !== "true") {
-    return <Redirect push to="/login" />;
+class AddMachine extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      redirect: false,
+    };
   }
 
-  return (
-    // <Layout>
-    //   <Header className="background">
-    //     <div className="menubar">
-    //       {/* <Navbar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
-    //     </div>
-    //   </Header>
+  onFinish = (values) => {
+    console.log(values);
+    this.setState({ redirect: true });
+  };
 
-    //   <Content className="background">
-    <Card>
-      <h1>เพิ่มเครื่องใหม่</h1>
+  render() {
+    console.log(this.state.redirect);
+    if (sessionStorage.getItem("login") !== "true") {
+      return <Redirect push to="/login" />;
+    } else if (this.state.redirect == true) {
+      console.log(sessionStorage.getItem("login"));
+      console.log(this.state.redirect);
+      return <Redirect push to="/" />;
+    }
 
-      <Form
-        {...layout}
-        name="nest-messages"
-        onFinish={onFinish}
-        validateMessages={validateMessages}
-      >
-        <Form.Item
-          name={["device", "serial number"]}
-          label="หมายเลขเครื่อง"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
+    return (
+      // <Layout>
+      //   <Header className="background">
+      //     <div className="menubar">
+      //       {/* <Navbar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
+      //     </div>
+      //   </Header>
+
+      //   <Content className="background">
+      <Card>
+        <h1>เพิ่มเครื่องใหม่</h1>
+
+        <Form
+          {...layout}
+          name="nest-messages"
+          onFinish={this.onFinish}
+          validateMessages={validateMessages}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name={["device", "name"]}
-          label="ชื่อ"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
+          <Form.Item
+            name={["device", "serial number"]}
+            label="หมายเลขเครื่อง"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          {/* <Form.Item
+            name={["device", "name"]}
+            label="ชื่อ"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item> */}
 
-        <Form.Item name={["device", "type"]} label="ประเภท">
+          {/* <Form.Item name={["device", "type"]} label="ประเภท">
           <Input />
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item name={["device", "phone"]} label="บาร์โค้ด">
+          {/* <Form.Item name={["device", "phone"]} label="บาร์โค้ด">
           <Input />
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
-    //   </Content>
-    // </Layout>
-  );
-};
+          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              // onClick={() => this.loginHandler}
+            >
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+      //   </Content>
+      // </Layout>
+    );
+  }
+}
 
 export default AddMachine;

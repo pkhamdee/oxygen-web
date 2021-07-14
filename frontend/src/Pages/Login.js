@@ -18,10 +18,11 @@ class Login extends React.Component {
   constructor() {
     super();
     this.state = {
-      redirect: false,
+      redirect: "",
       user: "",
       password: "",
     };
+    sessionStorage.setItem("login", "false");
   }
 
   onFinish = (values) => {
@@ -31,18 +32,26 @@ class Login extends React.Component {
     console.log(values.username);
     console.log(values.password);
     // console.log(sessionStorage.getItem("login"));
-    this.setState({ redirect: true });
+    this.setState({ redirect: "home" });
   };
 
   onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
+  registerHandler = () => {
+    this.setState({ redirect: "register" });
+  };
+
   render() {
-    if (this.state.redirect == true) {
+    if (this.state.redirect == "home") {
       console.log(sessionStorage.getItem("login"));
       console.log(this.state.redirect);
-      // return <Redirect push to="/dashboard" />;
+      return <Redirect push to="/" />;
+    } else if (this.state.redirect == "register") {
+      console.log(sessionStorage.getItem("login"));
+      console.log(this.state.redirect);
+      return <Redirect push to="/register" />;
     }
 
     return (
@@ -101,7 +110,7 @@ class Login extends React.Component {
               style={{
                 margin: "0 8px",
               }}
-              onClick={() => console.log("pressed")}
+              onClick={() => this.registerHandler()}
             >
               Register
             </Button>
