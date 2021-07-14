@@ -8,50 +8,56 @@ import "../css/widget.css";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Redirect, Link } from "react-router-dom";
+import axios from "axios";
 
 
 
 class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      machines: [
-        {
-          id: 1,
-          serialnumber: "aaaaaaaaaa",
-          phonenum: "0000000000",
-          available: true,
-        },
-        {
-          id: 2,
-          serialnumber: "bbbbbbbbbb",
-          phonenum: "1111111111",
-          available: true,
-        },
-        {
-          id: 3,
-          serialnumber: "cccccccccc",
-          phonenum: "2222222222",
-          available: false,
-        },
-        {
-          id: 4,
-          serialnumber: "dddddddddd",
-          phonenum: "3333333333",
-          available: true,
-        },
-      ],
-      destination: "",
-    };
+  state = {
+    devices: []
   }
 
+  componentDidMount() {
+    axios.get('http://localhost:8080/devices')
+      .then(res => {
+        const devices = res.data.content;
+        this.setState({ devices });
+      })
+  }
+
+  constructor(props) {
+    super(props);
+    axios.get('http://localhost:8080/devices')
+      .then(res => {
+        const devices = res.data.content;
+        this.state = devices;
+      })
+  }
+//
+//  renderTableHeader() {
+//    console.log('Header');
+//    console.log(this.state.devices);
+//    let header = Object.keys(this.state.devices);
+//    return header.map((key, index) => {
+//      if (key != "status") {
+//        return <th key={index}>{key.toUpperCase()}</th>;
+//      }
+//    });
+//  }
+//
   renderTableHeader() {
-    let header = Object.keys(this.state.machines[0]);
-    return header.map((key, index) => {
-      if (key != "available") {
-        return <th key={index}>{key.toUpperCase()}</th>;
-      }
+    console.log('Head');
+    let key = this.state.devices;
+    let header = key.map((device, index) => {
+        let keyArray = Object.keys(device);
+        return keyArray.map((header, sindex) =>
+        {
+            if (header != "status"){
+                return <th key={sindex}> {header.toUpperCase()} </th>;
+            }
+        });
     });
+    return header[0]; // will be fix
   }
 
   giveHandler = () => {
@@ -59,26 +65,27 @@ class Dashboard extends React.Component {
   };
 
   renderTableData() {
-    return this.state.machines.map((machine, index) => {
-      const { id, serialnumber, phonenum, available } = machine; //destructuring
+    console.log('Data');
+    return this.state.devices.map((device, index) => {
+      const { length, deviceId, barcode, name, status } = device ; //destructuring
       return (
-        <tr key={id} bgcolor={!available ? "grey" : "white"}>
+        <tr key={deviceId} bgcolor={!status ? "grey" : "white"}>
           <td>
-            <font color={available ? "grey" : "white"}>{id}</font>
+            <font color={status ? "grey" : "white"}>{deviceId}</font>
           </td>
           <td>
-            <font color={available ? "grey" : "white"}>{serialnumber}</font>
+            <font color={status ? "grey" : "white"}>{barcode}</font>
           </td>
           <td>
-            <font color={available ? "grey" : "white"}>{phonenum}</font>
+            <font color={status ? "grey" : "white"}>{name}</font>
           </td>
           <td>
             {" "}
             <Button
-              variant={!available ? "outline-light" : "outline-error"}
+              variant={!status ? "outline-light" : "outline-error"}
               size="sm"
-              onClick="returnFunction()"
-              disabled={available}
+//              onClick="returnFunction()"
+              disabled={status}
             >
               Return
             </Button>{" "}
@@ -86,12 +93,12 @@ class Dashboard extends React.Component {
           <td>
             {" "}
             <Button
-              variant={available ? "outline-success" : "outline-error"}
+              variant={status ? "outline-success" : "outline-error"}
               size="sm"
               onClick={() => {
                 this.giveHandler();
               }}
-              disabled={!available}
+              disabled={!status}
             >
               Give
             </Button>{" "}
@@ -131,7 +138,7 @@ class Dashboard extends React.Component {
                 <div className="col-sm">
                   <div className="card-box bg-green">
                     <div className="inner">
-                      <h3> 10/300 </h3>
+                      <h3> 10/{this.state.devices.length} </h3>
                       <p> Available/Total </p>
                     </div>
                     <div className="icon">
