@@ -23,14 +23,15 @@ class Login extends React.Component {
       password: "",
     };
     sessionStorage.setItem("login", "false");
+    console.log(sessionStorage.getItem("login"));
   }
 
   onFinish = (values) => {
-    console.log("Success:", values);
+    // console.log("Success:", values);
     // console.log("In finish handler");
     sessionStorage.setItem("login", "true");
-    console.log(values.username);
-    console.log(values.password);
+    // console.log(values.username);
+    // console.log(values.password);
     // console.log(sessionStorage.getItem("login"));
     this.setState({ redirect: "home" });
   };
@@ -45,12 +46,12 @@ class Login extends React.Component {
 
   render() {
     if (this.state.redirect == "home") {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
+      // console.log(sessionStorage.getItem("login"));
+      // console.log(this.state.redirect);
       return <Redirect push to="/" />;
     } else if (this.state.redirect == "register") {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
+      // console.log(sessionStorage.getItem("login"));
+      // console.log(this.state.redirect);
       return <Redirect push to="/register" />;
     }
 
