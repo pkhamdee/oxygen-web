@@ -107,13 +107,13 @@ class Dashboard extends React.Component {
     }
 
     return (
-      <Layout>
-        <Header className="background">
-          <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-        </Header>
+      // <Layout>
+      //   <Header className="background">
+      //     {/* <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
+      //   </Header>
 
-        <Content className="background">
-          <br></br>
+      //   <Content className="background">
+      //     <br></br>
           <div>
             <div className="container">
               <div className="row">
@@ -149,8 +149,8 @@ class Dashboard extends React.Component {
               </tbody>
             </table>
           </div>
-        </Content>
-      </Layout>
+      //   </Content>
+      // </Layout>
     );
   }
 }

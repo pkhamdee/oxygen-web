@@ -95,7 +95,7 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <>
-      <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
+      {/* <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

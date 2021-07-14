@@ -10,13 +10,19 @@ import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Admin from "./Pages/Admin";
 
+import Navbar from "./components/Navbar";
+
 function App() {
   return (
     <Router>
       <div className="container">
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
+        {/* <Navbar /> */}
         <Switch>
+          <Route exact path="/login" component={Login} />
+          <div>
+            <Navbar />
           <Route path="/give">
             <Give />
           </Route>
@@ -38,12 +44,14 @@ function App() {
           <Route path="/admin">
             <Admin />
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <Dashboard />
           </Route>
+          </div>
         </Switch>
       </div>
     </Router>
+    
   );
 }
 
