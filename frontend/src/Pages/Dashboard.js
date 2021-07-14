@@ -20,53 +20,44 @@ class Dashboard extends React.Component {
   componentDidMount() {
     axios.get('http://localhost:8080/devices')
       .then(res => {
-        const devices = res.data;
+        const devices = res.data.content;
         this.setState({ devices });
-        console.log('td' + typeof this.state.devices);
-        console.log('d' + this.state.devices);
       })
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      machines: [
-        {
-          deviceId: 1,//deviceId
-          barcode: "aaaaaaaaaa",//barcode
-          name: "0000000000",//name
-          status: true,//status == available or inused
-        },
-        {
-          deviceId: 2,
-          barcode: "bbbbbbbbbb",
-          name: "1111111111",
-          status: true,
-        },
-        {
-          deviceId: 3,
-          barcode: "cccccccccc",
-          name: "2222222222",
-          status: false,
-        },
-        {
-          deviceId: 4,
-          barcode: "dddddddddd",
-          name: "3333333333",
-          status: true,
-        },
-      ],
-      destination: "",
-    };
+    axios.get('http://localhost:8080/devices')
+      .then(res => {
+        const devices = res.data.content;
+        this.state = devices;
+      })
   }
-
+//
+//  renderTableHeader() {
+//    console.log('Header');
+//    console.log(this.state.devices);
+//    let header = Object.keys(this.state.devices);
+//    return header.map((key, index) => {
+//      if (key != "status") {
+//        return <th key={index}>{key.toUpperCase()}</th>;
+//      }
+//    });
+//  }
+//
   renderTableHeader() {
-    let header = Object.keys(this.state.machines[0]);
-    return header.map((key, index) => {
-      if (key != "status") {
-        return <th key={index}>{key.toUpperCase()}</th>;
-      }
+    console.log('Head');
+    let key = this.state.devices;
+    let header = key.map((device, index) => {
+        let keyArray = Object.keys(device);
+        return keyArray.map((header, sindex) =>
+        {
+            if (header != "status"){
+                return <th key={sindex}> {header.toUpperCase()} </th>;
+            }
+        });
     });
+    return header[0]; // will be fix
   }
 
   giveHandler = () => {
@@ -74,10 +65,9 @@ class Dashboard extends React.Component {
   };
 
   renderTableData() {
-    console.log('tm' + typeof this.state.machines);
-    console.log('m' + this.state.machines);
-    return this.state.machines.map((machine, index) => {
-      const { deviceId, barcode, name, status } = machine; //destructuring
+    console.log('Data');
+    return this.state.devices.map((device, index) => {
+      const { length, deviceId, barcode, name, status } = device ; //destructuring
       return (
         <tr key={deviceId} bgcolor={!status ? "grey" : "white"}>
           <td>
@@ -148,7 +138,7 @@ class Dashboard extends React.Component {
                 <div className="col-sm">
                   <div className="card-box bg-green">
                     <div className="inner">
-                      <h3> 10/300 </h3>
+                      <h3> 10/{this.state.devices.length} </h3>
                       <p> Available/Total </p>
                     </div>
                     <div className="icon">
