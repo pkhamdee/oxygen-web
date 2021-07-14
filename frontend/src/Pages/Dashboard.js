@@ -9,8 +9,6 @@ import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Redirect, Link } from "react-router-dom";
 
-
-
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
@@ -42,6 +40,7 @@ class Dashboard extends React.Component {
         },
       ],
       destination: "",
+      chosenSerial: "",
     };
   }
 
@@ -54,8 +53,10 @@ class Dashboard extends React.Component {
     });
   }
 
-  giveHandler = () => {
-    this.setState({ destination: "give" });
+  giveHandler = async (number) => {
+    // console.log(number)
+    await this.setState({ destination: "give", chosenSerial: number });
+    console.log(this.state.chosenSerial);
   };
 
   renderTableData() {
@@ -77,8 +78,9 @@ class Dashboard extends React.Component {
             <Button
               variant={!available ? "outline-light" : "outline-error"}
               size="sm"
-              onClick="returnFunction()"
+              // onClick="returnFunction()"
               disabled={available}
+              value={serialnumber}
             >
               Return
             </Button>{" "}
@@ -88,8 +90,9 @@ class Dashboard extends React.Component {
             <Button
               variant={available ? "outline-success" : "outline-error"}
               size="sm"
+              value={serialnumber}
               onClick={() => {
-                this.giveHandler();
+                this.giveHandler(serialnumber);
               }}
               disabled={!available}
             >
@@ -102,8 +105,13 @@ class Dashboard extends React.Component {
   }
 
   render() {
+    console.log(sessionStorage.getItem("login"));
+    if (sessionStorage.getItem("login") !== "true") {
+      return <Redirect push to="/login" />;
+    }
+
     if (this.state.destination == "give") {
-      return <Redirect push to="/give" />;
+      return <Redirect to={`/give/${this.state.chosenSerial}`} />;
     }
 
     return (

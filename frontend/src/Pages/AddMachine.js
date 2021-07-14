@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Card, Layout } from "antd";
 import SideBar from "../components/sidebar";
-import "../css/mydiv.css"
-import { Header , Body, Content} from "antd/lib/layout/layout";
+import "../css/mydiv.css";
+import { Header, Body, Content } from "antd/lib/layout/layout";
+import { Redirect, Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -32,6 +33,10 @@ const AddMachine = () => {
   const onFinish = (values) => {
     console.log(values);
   };
+
+  if (sessionStorage.getItem("login") !== "true") {
+    return <Redirect push to="/login" />;
+  }
 
   return (
     <Layout>
