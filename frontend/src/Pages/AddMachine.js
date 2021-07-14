@@ -3,8 +3,11 @@ import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Card, Layout } from "antd";
 import SideBar from "../components/sidebar";
-import "../css/mydiv.css"
-import { Header , Body, Content} from "antd/lib/layout/layout";
+import "../css/mydiv.css";
+import { Header, Body, Content } from "antd/lib/layout/layout";
+
+import Navbar from "../components/Navbar";
+import axios from "axios";
 
 const layout = {
   labelCol: {
@@ -34,64 +37,63 @@ const AddMachine = () => {
   };
 
   return (
-    <Layout>
-      <Header className="background">
-        <div className="menubar">
-          <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-        </div>
-      </Header>
+    // <Layout>
+    //   <Header className="background">
+    //     <div className="menubar">
+    //       {/* <Navbar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
+    //     </div>
+    //   </Header>
 
-      <Content className="background">
-        <br></br>
-        <Card>
-          <h1>เพิ่มเครื่องใหม่</h1>
+    //   <Content className="background">
+    <Card>
+      <h1>เพิ่มเครื่องใหม่</h1>
 
-          <Form
-            {...layout}
-            name="nest-messages"
-            onFinish={onFinish}
-            validateMessages={validateMessages}
-          >
-            <Form.Item
-              name={["device", "serial number"]}
-              label="Serial Number"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name={["device", "name"]}
-              label="ชื่อ"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
+      <Form
+        {...layout}
+        name="nest-messages"
+        onFinish={onFinish}
+        validateMessages={validateMessages}
+      >
+        <Form.Item
+          name={["device", "serial number"]}
+          label="หมายเลขเครื่อง"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name={["device", "name"]}
+          label="ชื่อ"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-            <Form.Item name={["device", "type"]} label="ประเภท">
-              <Input />
-            </Form.Item>
+        <Form.Item name={["device", "type"]} label="ประเภท">
+          <Input />
+        </Form.Item>
 
-            <Form.Item name={["device", "phone"]} label="บาร์โค้ด">
-              <Input />
-            </Form.Item>
+        <Form.Item name={["device", "phone"]} label="บาร์โค้ด">
+          <Input />
+        </Form.Item>
 
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Content>
-    </Layout>
+        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
+    </Card>
+    //   </Content>
+    // </Layout>
   );
 };
 

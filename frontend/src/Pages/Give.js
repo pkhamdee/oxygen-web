@@ -69,15 +69,15 @@ const Give = () => {
   };
 
   return (
-    <Layout>
-      <Header className="background">
-        <div className="menubar">
-          <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-        </div>
-      </Header>
+    // <Layout>
+    //   <Header className="background">
+    //     <div className="menubar">
+    //       {/* <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
+    //     </div>
+    //   </Header>
 
-      <Content className="background">
-        <br></br>
+    //   <Content className="background">
+    //     <br></br>
         <Card>
           <h1>ฟอร์ม</h1>
           <h5>*กรุณากรอกข้อมูลของผู้ป่วยตามจริง</h5>
@@ -155,8 +155,8 @@ const Give = () => {
             </Form.Item>
           </Form>
         </Card>
-      </Content>
-    </Layout>
+    //   </Content>
+    // </Layout>
   );
 };
 

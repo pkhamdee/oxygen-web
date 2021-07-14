@@ -1,242 +1,317 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import ReactDOM from "react-dom";
-import "antd/dist/antd.css";
-import { Table, Input, Button, Popconfirm, Form, Layout } from 'antd';
-import SideBar from "../components/sidebar";
-import "../css/mydiv.css";
-import { Header, Body, Content } from "antd/lib/layout/layout";
-const EditableContext = React.createContext(null);
+import React, { useState } from 'react';
+import {
+  SortingState, EditingState, PagingState, SummaryState,
+  IntegratedPaging, IntegratedSorting, IntegratedSummary,
+} from '@devexpress/dx-react-grid';
+import {
+  Grid,
+  Table, TableHeaderRow, TableEditRow, TableEditColumn,
+  PagingPanel, DragDropProvider, TableColumnReordering,
+  TableFixedColumns, TableSummaryRow,
+} from '@devexpress/dx-react-grid-material-ui';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import TableCell from '@material-ui/core/TableCell';
 
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import CancelIcon from '@material-ui/icons/Cancel';
+import { withStyles } from '@material-ui/core/styles';
 
+import { ProgressBarCell } from '../components/progress-bar-cell';
+import { HighlightedCell } from '../components/highlighted-cell';
+import { CurrencyTypeProvider } from '../components/currency-type-provider';
+import { PercentTypeProvider } from '../components/percent-type-provider';
 
-const layout = {
-  labelCol: {
-    span: 8,
+import {
+  generateRows,
+  globalSalesValues,
+} from '../demo-data/generator';
+
+const styles = theme => ({
+  lookupEditCell: {
+    padding: theme.spacing(1),
   },
-  wrapperCol: {
-    span: 16,
+  dialog: {
+    width: 'calc(100% - 16px)',
   },
+  inputRoot: {
+    width: '100%',
+  },
+  selectMenu: {
+    position: 'absolute !important',
+  },
+});
+
+const AddButton = ({ onExecute }) => (
+  <div style={{ textAlign: 'center' }}>
+    <Button
+      color="primary"
+      onClick={onExecute}
+      title="Create new row"
+    >
+      New
+    </Button>
+  </div>
+);
+
+const EditButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} title="Edit row">
+    <EditIcon />
+  </IconButton>
+);
+
+const DeleteButton = ({ onExecute }) => (
+  <IconButton
+    onClick={() => {
+      // eslint-disable-next-line
+      if (window.confirm('Are you sure you want to delete this row?')) {
+        onExecute();
+      }
+    }}
+    title="Delete row"
+  >
+    <DeleteIcon />
+  </IconButton>
+);
+
+const CommitButton = ({ onExecute }) => (
+  <IconButton onClick={onExecute} title="Save changes">
+    <SaveIcon />
+  </IconButton>
+);
+
+const CancelButton = ({ onExecute }) => (
+  <IconButton color="secondary" onClick={onExecute} title="Cancel changes">
+    <CancelIcon />
+  </IconButton>
+);
+
+const commandComponents = {
+  add: AddButton,
+  edit: EditButton,
+  delete: DeleteButton,
+  commit: CommitButton,
+  cancel: CancelButton,
 };
-/* eslint-disable no-template-curly-in-string */
 
+const Command = ({ id, onExecute }) => {
+  const CommandButton = commandComponents[id];
+  return (
+    <CommandButton
+      onExecute={onExecute}
+    />
+  );
+};
 
-const EditableRow = ({ index, ...props }) => {
-    const [form] = Form.useForm();
-    return (
-      <Form form={form} component={false}>
-        <EditableContext.Provider value={form}>
-          <tr {...props} />
-        </EditableContext.Provider>
-      </Form>
-    );
-  };
-  
-  const EditableCell = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    ...restProps
-  }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef(null);
-    const form = useContext(EditableContext);
-    useEffect(() => {
-      if (editing) {
-        inputRef.current.focus();
-      }
-    }, [editing]);
-  
-    const toggleEdit = () => {
-      setEditing(!editing);
-      form.setFieldsValue({
-        [dataIndex]: record[dataIndex],
-      });
-    };
-  
-    const save = async () => {
-      try {
-        const values = await form.validateFields();
-        toggleEdit();
-        handleSave({ ...record, ...values });
-      } catch (errInfo) {
-        console.log('Save failed:', errInfo);
-      }
-    };
-  
-    let childNode = children;
-  
-    if (editable) {
-      childNode = editing ? (
-        <Form.Item
-          style={{
-            margin: 0,
-          }}
-          name={dataIndex}
-          rules={[
-            {
-              required: true,
-              message: `${title} is required.`,
-            },
-          ]}
-        >
-          <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-        </Form.Item>
-      ) : (
-        <div
-          className="editable-cell-value-wrap"
-          style={{
-            paddingRight: 24,
-          }}
-          onClick={toggleEdit}
-        >
-          {children}
-        </div>
-      );
-    }
-  
-    return <td {...restProps}>{childNode}</td>;
-  };
+const availableValues = {
+  name1: globalSalesValues.name1,
+  region: globalSalesValues.region,
+  role: globalSalesValues.role,
+};
 
+const LookupEditCellBase = ({
+  availableColumnValues, value, onValueChange, classes,
+}) => (
+  <TableCell
+    className={classes.lookupEditCell}
+  >
+    <Select
+      value={value}
+      onChange={event => onValueChange(event.target.value)}
+      MenuProps={{
+        className: classes.selectMenu,
+      }}
+      input={(
+        <Input
+          classes={{ root: classes.inputRoot }}
+        />
+      )}
+    >
+      {availableColumnValues.map(item => (
+        <MenuItem key={item} value={item}>
+          {item}
+        </MenuItem>
+      ))}
+    </Select>
+  </TableCell>
+);
+export const LookupEditCell = withStyles(styles, { name: 'ControlledModeDemo' })(LookupEditCellBase);
 
-
-
-
-  class Admin extends React.Component {
-    constructor(props) {
-      super(props);
-      this.columns = [
-        {
-          title: 'name',
-          dataIndex: 'name',
-          width: '50%',
-          editable: true,
-        },
-        {
-          title: 'phone number',
-          dataIndex: 'phone',
-        },
-        {
-          title: 'operation',
-          dataIndex: 'operation',
-          render: (_, record) =>
-            this.state.dataSource.length >= 1 ? (
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <a>Delete</a>
-              </Popconfirm>
-            ) : null,
-        },
-      ];
-      this.state = {
-        dataSource: [
-          {
-            key: '0',
-            name: 'Edward King 0',
-            phone: '0987876543',
-          },
-          {
-            key: '1',
-            name: 'Edward King 1',
-            phone: '0765453234',
-          },
-        ],
-        count: 2,
-      };
-    }
-  
-    handleDelete = (key) => {
-      const dataSource = [...this.state.dataSource];
-      this.setState({
-        dataSource: dataSource.filter((item) => item.key !== key),
-      });
-    };
-    handleAdd = () => {
-      const { count, dataSource } = this.state;
-      const newData = {
-        key: count,
-        name: `Edward King ${count}`,
-        age: '32',
-        address: `London, Park Lane no. ${count}`,
-      };
-      this.setState({
-        dataSource: [...dataSource, newData],
-        count: count + 1,
-      });
-    };
-    handleSave = (row) => {
-      const newData = [...this.state.dataSource];
-      const index = newData.findIndex((item) => row.key === item.key);
-      const item = newData[index];
-      newData.splice(index, 1, { ...item, ...row });
-      this.setState({
-        dataSource: newData,
-      });
-    };
-  
-    render() {
-      const { dataSource } = this.state;
-      const components = {
-        body: {
-          row: EditableRow,
-          cell: EditableCell,
-        },
-      };
-      const columns = this.columns.map((col) => {
-        if (!col.editable) {
-          return col;
-        }
-  
-        return {
-          ...col,
-          onCell: (record) => ({
-            record,
-            editable: col.editable,
-            dataIndex: col.dataIndex,
-            title: col.title,
-            handleSave: this.handleSave,
-          }),
-        };
-      });
-      return (
-
-        <Layout>
-        <Header className="background">
-          <div className="menubar">
-            <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-          </div>
-        </Header>
-
-        <Content className="background">
-          <br></br>
-
-
-        <div>
-          <Button
-            onClick={this.handleAdd}
-            type="primary"
-            style={{
-              marginBottom: 16,
-            }}
-          >
-            Add a row
-          </Button>
-          <Table
-            components={components}
-            rowClassName={() => 'editable-row'}
-            bordered
-            dataSource={dataSource}
-            columns={columns}
-          />
-        </div>
-        </Content>
-      </Layout>
-      );
-    }
+const Cell = (props) => {
+  const { column } = props;
+  if (column.name === 'name') {
+    return <ProgressBarCell {...props} />;
   }
-  
-  //ReactDOM.render(<EditableTable />, document.getElementById('container'));
+  if (column.name === 'amount') {
+    return <HighlightedCell {...props} />;
+  }
+  return <Table.Cell {...props} />;
+};
 
+const EditCell = (props) => {
+  const { column } = props;
+  const availableColumnValues = availableValues[column.name];
+  if (availableColumnValues) {
+    return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
+  }
+  return <TableEditRow.Cell {...props} />;
+};
 
-export default Admin;
+const getRowId = row => row.id;
+
+export default () => {
+  const [columns] = useState([
+    { name: 'name1', title: 'ชื่อ-นามสกุล' },
+    // { name: 'region', title: 'Region' },
+    // { name: 'amount', title: 'Sale Amount' },
+    // { name: 'name', title: 'ชื่อ-นามสกุล' },
+    { name: 'tel', title: 'เบอร์ติดต่อ' },
+    { name: 'role', title: 'ตำแหน่ง' },
+  ]);
+  const [rows, setRows] = useState(generateRows({
+    columnValues: { id: ({ index }) => index, ...globalSalesValues },
+    length: 12,
+  }));
+  const [tableColumnExtensions] = useState([
+    { columnName: 'name1', width: 200 },
+    { columnName: 'region', width: 180 },
+    { columnName: 'amount', width: 180, align: 'right' },
+    { columnName: 'name', width: 180 },
+    { columnName: 'tel', width: 180 },
+    { columnName: 'role', width: 200 },
+  ]);
+  const [sorting, getSorting] = useState([]);
+  const [editingRowIds, getEditingRowIds] = useState([]);
+  const [addedRows, setAddedRows] = useState([]);
+  const [rowChanges, setRowChanges] = useState({});
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(0);
+  const [pageSizes] = useState([5, 10, 0]);
+  const [columnOrder, setColumnOrder] = useState(['name1', 'region', 'amount', 'name', 'tel', 'role']);
+  const [currencyColumns] = useState(['amount']);
+  const [percentColumns] = useState(['name']);
+  const [leftFixedColumns] = useState([TableEditColumn.COLUMN_TYPE]);
+  const [totalSummaryItems] = useState([
+    { columnName: 'name', type: 'avg' },
+    { columnName: 'amount', type: 'sum' },
+  ]);
+
+  const changeAddedRows = value => setAddedRows(
+    value.map(row => (Object.keys(row).length ? row : {
+      amount: 0,
+      name: 0,
+      // tel: new Date().toISOString().split('T')[0],
+      tel: 0,
+      name1: availableValues.name1[0],
+      region: availableValues.region[0],
+      role: availableValues.role[0],
+    })),
+  );
+
+  const deleteRows = (deletedIds) => {
+    const rowsForDelete = rows.slice();
+    deletedIds.forEach((rowId) => {
+      const index = rowsForDelete.findIndex(row => row.id === rowId);
+      if (index > -1) {
+        rowsForDelete.splice(index, 1);
+      }
+    });
+    return rowsForDelete;
+  };
+
+  const commitChanges = ({ added, changed, deleted }) => {
+    let changedRows;
+    if (added) {
+      const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
+      changedRows = [
+        ...rows,
+        ...added.map((row, index) => ({
+          id: startingAddedId + index,
+          ...row,
+        })),
+      ];
+    }
+    if (changed) {
+      changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+    }
+    if (deleted) {
+      changedRows = deleteRows(deleted);
+    }
+    setRows(changedRows);
+  };
+
+  return (
+    <Paper>
+      <Grid
+        rows={rows}
+        columns={columns}
+        getRowId={getRowId}
+      >
+        <SortingState
+          sorting={sorting}
+          onSortingChange={getSorting}
+        />
+        <PagingState
+          currentPage={currentPage}
+          onCurrentPageChange={setCurrentPage}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+        />
+        <EditingState
+          editingRowIds={editingRowIds}
+          onEditingRowIdsChange={getEditingRowIds}
+          rowChanges={rowChanges}
+          onRowChangesChange={setRowChanges}
+          addedRows={addedRows}
+          onAddedRowsChange={changeAddedRows}
+          onCommitChanges={commitChanges}
+        />
+        <SummaryState
+          totalItems={totalSummaryItems}
+        />
+
+        <IntegratedSorting />
+        <IntegratedPaging />
+        <IntegratedSummary />
+
+        <CurrencyTypeProvider for={currencyColumns} />
+        <PercentTypeProvider for={percentColumns} />
+
+        <DragDropProvider />
+
+        <Table
+          columnExtensions={tableColumnExtensions}
+          cellComponent={Cell}
+        />
+        <TableColumnReordering
+          order={columnOrder}
+          onOrderChange={setColumnOrder}
+        />
+        <TableHeaderRow showSortingControls />
+        <TableEditRow
+          cellComponent={EditCell}
+        />
+        <TableEditColumn
+          width={150}
+          showAddCommand={!addedRows.length}
+          showEditCommand
+          showDeleteCommand
+          commandComponent={Command}
+        />
+        <TableSummaryRow />
+        <TableFixedColumns
+          leftColumns={leftFixedColumns}
+        />
+        <PagingPanel
+          pageSizes={pageSizes}
+        />
+      </Grid>
+    </Paper>
+  );
+};
