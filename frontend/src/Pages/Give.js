@@ -31,6 +31,7 @@ import SideBar from "../components/sidebar";
 import "../css/mydiv.css";
 import { Header, Body, Content } from "antd/lib/layout/layout";
 import { Redirect, Link } from "react-router-dom";
+import axios from "axios";
 
 const layout = {
   labelCol: {
@@ -70,27 +71,107 @@ class Give extends React.Component {
     this.state = {
       redirect: false,
       serial: props.match.params.barcode,
-      id: props.match.params.id
+      id: props.match.params.id,
+      dataUser: {
+        firstName: "",
+        lastName: "",
+        age: "",
+        phone: "",
+        location: "",
+        severity: 0,
+        type: 3,
+      },
+      dataTrans: {
+        deviceId: null,
+        deivce_location: null,
+        endDate: null,
+        startDate: null,
+        userId: null,
+      },
+      dataUpdate: {
+        deviceId: props.match.params.id,
+        status: 2,
+        name: null,
+        barcode: props.match.params.barcode,
+      },
     };
-    console.log(props.match.params.barcode);
-    console.log(props.match.params.id);
   }
 
   onFinish = (values) => {
-    console.log(values);
-    this.setState({ redirect: true });
+    let firstname = values.user.name.split(" ")[0];
+    let lastname;
+    try {
+      lastname = values.user.name.split(" ")[1];
+    } catch (e) {
+      lastname = "";
+    }
+    this.setState({
+      redirect: true,
+      dataUser: {
+        firstName: firstname,
+        lastName: lastname,
+        age: values.user.age,
+        phone: values.user.phone,
+        location: values.user.address,
+        // severity: 0,
+        type: 3,
+      },
+    });
+
+    axios
+      .post("http://localhost:8080/user", this.state.dataUser, {
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        this.setState({
+          dataTrans: {
+            deviceId: this.props.match.params.id,
+            deivce_location: null,
+            endDate: values.dateReturn._d,
+            startDate: values.dateGive._d,
+            userId: res.data.userId,
+          },
+          dataUpdate: {
+            deviceId: this.props.match.params.id,
+            status: 2,
+            name: values.user.phone,
+            barcode: this.props.match.params.barcode,
+          },
+        });
+
+        axios
+          .post("http://localhost:8080/device/", this.state.dataUpdate, {
+            headers: {
+              "content-type": "application/json",
+            },
+          })
+          .then(console.log);
+
+        axios
+          .post("http://localhost:8080/userdevice", this.state.dataTrans, {
+            headers: {
+              "content-type": "application/json",
+            },
+          })
+          .then((rs) => {
+            console.log(rs);
+          });
+      });
   };
 
   render() {
     console.log(sessionStorage.getItem("login"));
 
-    if (sessionStorage.getItem("login") !== "true") {
-      return <Redirect push to="/login" />;
-    } else if (this.state.redirect == true) {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
-      return <Redirect push to="/" />;
-    }
+    // if (sessionStorage.getItem("login") !== "true") {
+    //   return <Redirect push to="/login" />;
+    // } else if (this.state.redirect == true) {
+    //   console.log(sessionStorage.getItem("login"));
+    //   console.log(this.state.redirect);
+    //   return <Redirect push to="/" />;
+    // }
 
     return (
       // <Layout>
@@ -112,7 +193,7 @@ class Give extends React.Component {
           onFinish={this.onFinish}
           validateMessages={validateMessages}
         >
-          <Form.Item label="วันที่ส่ง">
+          <Form.Item label="วันที่ส่ง" name={"dateGive"}>
             <DatePicker />
           </Form.Item>
           <Form.Item
@@ -151,7 +232,7 @@ class Give extends React.Component {
 
           <h3>สำหรับเจ้าหน้าที่</h3>
 
-          <Form.Item label="วันที่รับคืน">
+          <Form.Item label="วันที่รับคืน" name={"dateReturn"}>
             <DatePicker />
           </Form.Item>
 
