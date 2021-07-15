@@ -47,10 +47,12 @@ class Dashboard extends React.Component {
     return header[0]; // will be fix
   }
 
-  giveHandler = async (number) => {
-    console.log(number);
-    await this.setState({ destination: "give", chosenSerial: number });
-    console.log(this.state.chosenSerial);
+  giveHandler = async (number, id) => {
+    await this.setState({
+      destination: "give",
+      chosenSerial: number,
+      deviceId: id,
+    });
   };
 
   countKey(obj, key, val) {
@@ -97,7 +99,7 @@ class Dashboard extends React.Component {
               size="sm"
               value={barcode}
               onClick={() => {
-                this.giveHandler(barcode);
+                this.giveHandler(barcode, deviceId);
               }}
               disabled={status == 2}
             >
@@ -110,11 +112,11 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    console.log(sessionStorage.getItem("login")); // username
+    console.log(sessionStorage.getItem("login"));
     if (this.state.destination == "give") {
       return (
         <Redirect
-          to={`/give/${this.state.devices.barcode},${this.state.devices.deviceId}`}
+          to={`/give?barcode=${this.state.chosenSerial},id=${this.state.deviceId}`}
         />
       );
     } else if (sessionStorage.getItem("login") !== "true") {
