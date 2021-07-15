@@ -13,25 +13,17 @@ import axios from "axios";
 class Dashboard extends React.Component {
   state = {
     devices: [],
+    users: []
   };
 
   componentDidMount() {
-    axios.get("http://localhost:8080/devices").then((res) => {
-      const devices = res.data.content;
-      this.setState({ devices });
-    });
-    //    axios.get('http://localhost:8080/users')
-    //      .then(res => {
-    //        const users = res.data.content;
-    //        this.setState({ users });
-    //      })
-  }
-
-  constructor(props) {
-    super(props);
-    axios.get("http://localhost:8080/devices").then((res) => {
-      const devices = res.data.content;
-      this.state = devices;
+    axios.get("http://localhost:8080/devices").then((dres) => {
+      const devices = dres.data.content;
+      axios.get('http://localhost:8080/users')
+        .then(ures => {
+          const users = ures.data.content;
+          this.setState({ devices, users });
+        })
     });
   }
 
@@ -60,6 +52,21 @@ class Dashboard extends React.Component {
     console.log(number);
     await this.setState({ destination: "give", chosenSerial: number });
     console.log(this.state.chosenSerial);
+  };
+
+  countKey( obj, key, val ) {
+    let count = 0 ;
+    obj.forEach(a => {
+        if(a.[key] == val){
+            return count += 1 ;
+        }
+    } ) ;
+    return count ;
+  };
+
+  returnDevice(){
+
+
   };
 
   renderTableData() {
@@ -107,9 +114,9 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    console.log(sessionStorage.getItem("login"));
+    console.log(sessionStorage.getItem("login")); // username
     if (this.state.destination == "give") {
-      return <Redirect to={`/give/${this.state.chosenSerial}`} />;
+      return <Redirect to={`/give/${this.state.devices.barcode},${this.state.devices.deviceId}`} />;
     } else if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     }
@@ -121,7 +128,7 @@ class Dashboard extends React.Component {
             <div className="col-sm">
               <div className="card-box bg-blue">
                 <div className="inner">
-                  <h3> 13436 </h3>
+                  <h3> {this.countKey( this.state.users, "type", "3")} </h3>
                   <p> จำนวนผู้ป่วยที่ได้รับการช่วยเหลือ </p>
                 </div>
                 <div className="icon">
@@ -132,7 +139,7 @@ class Dashboard extends React.Component {
             <div className="col-sm">
               <div className="card-box bg-green">
                 <div className="inner">
-                  <h3> 10/{this.state.devices.length} </h3>
+                  <h3> {this.countKey( this.state.devices, "status", "4")}/{this.state.devices.length} </h3>
                   <p> จำนวนเครื่องว่าง/ทั้งหมด </p>
                 </div>
                 <div className="icon">
