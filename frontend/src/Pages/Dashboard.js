@@ -5,7 +5,7 @@ import "../css/mydiv.css";
 import { Layout } from "antd";
 import "../css/dashboard.css";
 import "../css/widget.css";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
@@ -14,6 +14,9 @@ class Dashboard extends React.Component {
   state = {
     devices: [],
     users: [],
+    openModal: false,
+    barcode: null,
+    deviceId: null,
   };
 
   componentDidMount() {
@@ -75,23 +78,34 @@ class Dashboard extends React.Component {
     return count;
   }
 
+  handleModalShowHide() {
+    this.setState({ openModal: !this.state.openModal });
+  }
+
+  handleReturnDevice(rbarcode, rdeviceId) {
+    this.handleModalShowHide();
+    sessionStorage.setItem('barcode', rbarcode);
+    sessionStorage.setItem('deviceId', rdeviceId);
+  }
+
   returnDevice(barcode, deviceId) {
-    let rheader = {
-     headers: {
-         'content-type': 'application/json'
-     }
-    };
-    let rdata = {
-        status: "4",
-        name: "ศูนย์", //tel number
-        deviceId: deviceId,
-        barcode: barcode
-    };
-    console.log("Header");
-    console.log(rheader);
-    console.log("data");
-    console.log(rdata);
-    axios.post("http://localhost:8080/device", rdata, rheader);
+    if (barcode && deviceId) {
+        let rheader = {
+         headers: {
+             'content-type': 'application/json'
+         }
+        };
+        let rdata = {
+            status: "4",
+            name: "ศูนย์", //Base's tel number
+            deviceId: deviceId,
+            barcode: barcode
+        };
+        axios.post("http://localhost:8080/device", rdata, rheader);
+    }
+    sessionStorage.setItem('barcode', '');
+    sessionStorage.setItem('deviceId', '');
+    this.handleModalShowHide();
   }
 
   renderTableData() {
@@ -112,7 +126,7 @@ class Dashboard extends React.Component {
             <Button
               variant={status == 2 ? "outline-light" : "outline-error"}
               size="sm"
-              onClick={() => {this.returnDevice(barcode, deviceId);}}
+              onClick={() => this.handleReturnDevice(barcode, deviceId)}
               disabled={status == 4}
             >
               Return
@@ -137,7 +151,6 @@ class Dashboard extends React.Component {
   }
 
   render() {
-//    console.log(sessionStorage.getItem("login"));
     if (this.state.destination == "give") {
       return (
         <Redirect
@@ -150,13 +163,29 @@ class Dashboard extends React.Component {
 
     return (
       <div>
+          <Modal show={this.state.openModal}>
+              <Modal.Header closeButton onClick={() => this.handleModalShowHide()}>
+              <Modal.Title>ยืนยันการคืนอุปกรณ์</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                  ยืนยันการคืนอุปกรณ์หมายเลขเครื่อง {sessionStorage.getItem('barcode')}
+              </Modal.Body>
+              <Modal.Footer>
+              <Button variant="secondary" onClick={() => this.handleModalShowHide()}>
+                  Cancel
+              </Button>
+              <Button variant="primary" onClick={() => this.returnDevice(sessionStorage.getItem('barcode'), sessionStorage.getItem('deviceId'))}>
+                  Confirm
+              </Button>
+              </Modal.Footer>
+          </Modal>
         <div className="container">
           <div className="row">
             <div className="col-sm">
               <div className="card-box bg-blue">
                 <div className="inner">
                   <h3> {this.countKey(this.state.users, "type", "3")} </h3>
-                  <p> จำนวนผู้ป่วยที่ได้รับการช่วยเหลือ </p>
+                  <p> จำนวนผู้ป่วย </p>
                 </div>
                 <div className="icon">
                   <h1 className="fonticon">Patient</h1>
