@@ -31,6 +31,7 @@ import SideBar from "../components/sidebar";
 import "../css/mydiv.css";
 import { Header, Body, Content } from "antd/lib/layout/layout";
 import { Redirect, Link } from "react-router-dom";
+import axios from "axios";
 
 const layout = {
   labelCol: {
@@ -78,7 +79,35 @@ class Give extends React.Component {
 
   onFinish = (values) => {
     console.log(values);
-    this.setState({ redirect: true });
+    console.log(values);
+    console.log(values.user.name.split(" ")[0]);
+    let firstname = values.user.name.split(" ")[0];
+    let lastname;
+    try {
+      lastname = values.user.name.split(" ")[1];
+    } catch (e) {
+      lastname = "";
+    }
+    this.setState({
+      redirect: true,
+      dataUser: {
+        firstName: firstname,
+        lastName: lastname,
+        userName: values.user.username,
+        age: values.user.age,
+        phone: values.user.phone,
+        location: values.user.address,
+        passwd: values.password,
+        type: 3,
+        severity: 1
+      },
+    });
+    console.log(this.state.data);
+    axios.post("http://localhost:8080/user", this.state.data, {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
   };
 
   render() {
