@@ -26,6 +26,16 @@ class Dashboard extends React.Component {
     });
   }
 
+  componentDidUpdate() {
+    axios.get("http://localhost:8080/devices").then((dres) => {
+      const devices = dres.data.content;
+      axios.get("http://localhost:8080/users").then((ures) => {
+        const users = ures.data.content;
+        this.setState({ devices, users });
+      });
+    });
+  }
+
   renderTableHeader() {
     let key = this.state.devices;
     let header = key.map((device, index) => {
