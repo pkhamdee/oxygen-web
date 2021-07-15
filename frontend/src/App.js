@@ -23,7 +23,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <div>
             <Navbar />
-          <Route path="/give:?" exact={true} component={Give} />
+          <Route path="/give/:barcode/:id" exact={true} component={Give} />
           <Route path="/return">
             <Return />
           </Route>

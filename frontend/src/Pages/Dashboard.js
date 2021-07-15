@@ -116,7 +116,7 @@ class Dashboard extends React.Component {
     if (this.state.destination == "give") {
       return (
         <Redirect
-          to={`/give?barcode=${this.state.chosenSerial},id=${this.state.deviceId}`}
+          to={`/give/${this.state.chosenSerial}/${this.state.deviceId}`}
         />
       );
     } else if (sessionStorage.getItem("login") !== "true") {
