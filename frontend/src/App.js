@@ -23,33 +23,32 @@ function App() {
           <Route exact path="/login" component={Login} />
           <div>
             <Navbar />
-          <Route path="/give/:barcode/:id" exact={true} component={Give} />
-          <Route path="/return">
-            <Return />
-          </Route>
-          <Route path="/landing">
-            <Landing />
-          </Route>
-          <Route path="/addmachine">
-            <AddMachine />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/admin">
-            <Admin />
-          </Route>
-          <Route exact path="/">
-            <Dashboard />
-          </Route>
+            <Route path="/give/:barcode/:id" exact={true} component={Give} />
+            <Route path="/return">
+              <Return />
+            </Route>
+            <Route path="/landing">
+              <Landing />
+            </Route>
+            <Route path="/addmachine">
+              <AddMachine />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/admin">
+              <Admin />
+            </Route>
+            <Route exact path="/">
+              <Dashboard />
+            </Route>
           </div>
         </Switch>
       </div>
     </Router>
-    
   );
 }
 
