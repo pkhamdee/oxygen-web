@@ -109,7 +109,7 @@ class Dashboard extends React.Component {
   render() {
     console.log(sessionStorage.getItem("login"));
     if (this.state.destination == "give") {
-      return <Redirect to={`/give/${this.state.chosenSerial}`} />;
+      return <Redirect to={`/give/${this.state.chosenSerial}&${this.state.deviceId}`} />;
     } else if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     }

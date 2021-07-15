@@ -7,6 +7,7 @@ import "../css/mydiv.css";
 import { Header, Content } from "antd/lib/layout/layout";
 import { Layout } from "antd";
 import { Redirect, Link } from "react-router-dom";
+import axios from "axios";
 
 const layout = {
   labelCol: {
@@ -33,12 +34,50 @@ const validateMessages = {
 class Register extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { redirect: false };
+    this.state = {
+      redirect: false,
+      data: {
+        firstName: "",
+        lastName: "",
+        userName: "",
+        age: null,
+        phone: "",
+        location: "",
+        passwd: "",
+        type: 1,
+      },
+    };
   }
 
   onFinish = (values) => {
     console.log(values);
-    this.setState({ redirect: true });
+    console.log(values.user.name.split(" ")[0]);
+    let firstname = values.user.name.split(" ")[0];
+    let lastname;
+    try{
+      lastname = values.user.name.split(" ")[1];
+    } catch (e) {
+      lastname = ""
+    }
+    this.setState({
+      redirect: true,
+      data: {
+        firstName: firstname,
+        lastName: lastname,
+        userName: values.user.username,
+        age: values.user.age,
+        phone: values.user.phone,
+        location: values.user.address,
+        passwd: values.password,
+        type: 1
+      },
+    });
+    console.log(this.state.data);
+    axios.post("http://localhost:8080/user", this.state.data, {
+      headers: {
+        'content-type': 'application/json'
+      }
+    });
   };
 
   render() {
@@ -71,11 +110,11 @@ class Register extends React.Component {
                 <Input />
               </Form.Item>
               <Form.Item
-                name={["user", "email"]}
-                label="email"
+                name={["user", "username"]}
+                label="Username"
                 rules={[
                   {
-                    type: "email",
+                    required: true,
                   },
                 ]}
               >
@@ -97,7 +136,7 @@ class Register extends React.Component {
               <Form.Item name={["user", "phone"]} label="เบอร์โทร">
                 <Input />
               </Form.Item>
-              <Form.Item name={["user", "address"]} label="ที่อยู๋">
+              <Form.Item name={["user", "address"]} label="ที่อยู่">
                 <Input.TextArea />
               </Form.Item>
               <Form.Item
