@@ -1,60 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  SortingState, EditingState, PagingState, SummaryState,
-  IntegratedPaging, IntegratedSorting, IntegratedSummary,
-} from '@devexpress/dx-react-grid';
+  SortingState,
+  EditingState,
+  PagingState,
+  SummaryState,
+  IntegratedPaging,
+  IntegratedSorting,
+  IntegratedSummary,
+} from "@devexpress/dx-react-grid";
 import {
   Grid,
-  Table, TableHeaderRow, TableEditRow, TableEditColumn,
-  PagingPanel, DragDropProvider, TableColumnReordering,
-  TableFixedColumns, TableSummaryRow,
-} from '@devexpress/dx-react-grid-material-ui';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import TableCell from '@material-ui/core/TableCell';
+  Table,
+  TableHeaderRow,
+  TableEditRow,
+  TableEditColumn,
+  PagingPanel,
+  DragDropProvider,
+  TableColumnReordering,
+  TableFixedColumns,
+  TableSummaryRow,
+} from "@devexpress/dx-react-grid-material-ui";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import Input from "@material-ui/core/Input";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import TableCell from "@material-ui/core/TableCell";
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import SaveIcon from '@material-ui/icons/Save';
-import CancelIcon from '@material-ui/icons/Cancel';
-import { withStyles } from '@material-ui/core/styles';
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import SaveIcon from "@material-ui/icons/Save";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { withStyles } from "@material-ui/core/styles";
 
-import { ProgressBarCell } from '../components/progress-bar-cell';
-import { HighlightedCell } from '../components/highlighted-cell';
-import { CurrencyTypeProvider } from '../components/currency-type-provider';
-import { PercentTypeProvider } from '../components/percent-type-provider';
+import { ProgressBarCell } from "../components/progress-bar-cell";
+import { HighlightedCell } from "../components/highlighted-cell";
+import { CurrencyTypeProvider } from "../components/currency-type-provider";
+import { PercentTypeProvider } from "../components/percent-type-provider";
 
-import {
-  generateRows,
-  globalSalesValues,
-} from '../demo-data/generator';
+import { generateRows, globalSalesValues } from "../demo-data/generator";
 
-const styles = theme => ({
+const styles = (theme) => ({
   lookupEditCell: {
     padding: theme.spacing(1),
   },
   dialog: {
-    width: 'calc(100% - 16px)',
+    width: "calc(100% - 16px)",
   },
   inputRoot: {
-    width: '100%',
+    width: "100%",
   },
   selectMenu: {
-    position: 'absolute !important',
+    position: "absolute !important",
   },
 });
 
 const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: 'center' }}>
-    <Button
-      color="primary"
-      onClick={onExecute}
-      title="Create new row"
-    >
+  <div style={{ textAlign: "center" }}>
+    <Button color="primary" onClick={onExecute} title="Create new row">
       New
     </Button>
   </div>
@@ -70,7 +74,7 @@ const DeleteButton = ({ onExecute }) => (
   <IconButton
     onClick={() => {
       // eslint-disable-next-line
-      if (window.confirm('Are you sure you want to delete this row?')) {
+      if (window.confirm("Are you sure you want to delete this row?")) {
         onExecute();
       }
     }}
@@ -102,11 +106,7 @@ const commandComponents = {
 
 const Command = ({ id, onExecute }) => {
   const CommandButton = commandComponents[id];
-  return (
-    <CommandButton
-      onExecute={onExecute}
-    />
-  );
+  return <CommandButton onExecute={onExecute} />;
 };
 
 const availableValues = {
@@ -116,24 +116,21 @@ const availableValues = {
 };
 
 const LookupEditCellBase = ({
-  availableColumnValues, value, onValueChange, classes,
+  availableColumnValues,
+  value,
+  onValueChange,
+  classes,
 }) => (
-  <TableCell
-    className={classes.lookupEditCell}
-  >
+  <TableCell className={classes.lookupEditCell}>
     <Select
       value={value}
-      onChange={event => onValueChange(event.target.value)}
+      onChange={(event) => onValueChange(event.target.value)}
       MenuProps={{
         className: classes.selectMenu,
       }}
-      input={(
-        <Input
-          classes={{ root: classes.inputRoot }}
-        />
-      )}
+      input={<Input classes={{ root: classes.inputRoot }} />}
     >
-      {availableColumnValues.map(item => (
+      {availableColumnValues.map((item) => (
         <MenuItem key={item} value={item}>
           {item}
         </MenuItem>
@@ -141,14 +138,16 @@ const LookupEditCellBase = ({
     </Select>
   </TableCell>
 );
-export const LookupEditCell = withStyles(styles, { name: 'ControlledModeDemo' })(LookupEditCellBase);
+export const LookupEditCell = withStyles(styles, {
+  name: "ControlledModeDemo",
+})(LookupEditCellBase);
 
 const Cell = (props) => {
   const { column } = props;
-  if (column.name === 'name') {
+  if (column.name === "name") {
     return <ProgressBarCell {...props} />;
   }
-  if (column.name === 'amount') {
+  if (column.name === "amount") {
     return <HighlightedCell {...props} />;
   }
   return <Table.Cell {...props} />;
@@ -158,33 +157,40 @@ const EditCell = (props) => {
   const { column } = props;
   const availableColumnValues = availableValues[column.name];
   if (availableColumnValues) {
-    return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
+    return (
+      <LookupEditCell
+        {...props}
+        availableColumnValues={availableColumnValues}
+      />
+    );
   }
   return <TableEditRow.Cell {...props} />;
 };
 
-const getRowId = row => row.id;
+const getRowId = (row) => row.id;
 
 export default () => {
   const [columns] = useState([
-    { name: 'name1', title: 'ชื่อ-นามสกุล' },
+    { name: "name1", title: "ชื่อ-นามสกุล" },
     // { name: 'region', title: 'Region' },
     // { name: 'amount', title: 'Sale Amount' },
     // { name: 'name', title: 'ชื่อ-นามสกุล' },
-    { name: 'tel', title: 'เบอร์ติดต่อ' },
-    { name: 'role', title: 'ตำแหน่ง' },
+    { name: "tel", title: "เบอร์ติดต่อ" },
+    { name: "role", title: "ตำแหน่ง" },
   ]);
-  const [rows, setRows] = useState(generateRows({
-    columnValues: { id: ({ index }) => index, ...globalSalesValues },
-    length: 12,
-  }));
+  const [rows, setRows] = useState(
+    generateRows({
+      columnValues: { id: ({ index }) => index, ...globalSalesValues },
+      length: 12,
+    })
+  );
   const [tableColumnExtensions] = useState([
-    { columnName: 'name1', width: 200 },
-    { columnName: 'region', width: 180 },
-    { columnName: 'amount', width: 180, align: 'right' },
-    { columnName: 'name', width: 180 },
-    { columnName: 'tel', width: 180 },
-    { columnName: 'role', width: 200 },
+    { columnName: "name1", width: 200 },
+    { columnName: "region", width: 180 },
+    { columnName: "amount", width: 180, align: "right" },
+    { columnName: "name", width: 180 },
+    { columnName: "tel", width: 180 },
+    { columnName: "role", width: 200 },
   ]);
   const [sorting, getSorting] = useState([]);
   const [editingRowIds, getEditingRowIds] = useState([]);
@@ -193,31 +199,43 @@ export default () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(0);
   const [pageSizes] = useState([5, 10, 0]);
-  const [columnOrder, setColumnOrder] = useState(['name1', 'region', 'amount', 'name', 'tel', 'role']);
-  const [currencyColumns] = useState(['amount']);
-  const [percentColumns] = useState(['name']);
+  const [columnOrder, setColumnOrder] = useState([
+    "name1",
+    "region",
+    "amount",
+    "name",
+    "tel",
+    "role",
+  ]);
+  const [currencyColumns] = useState(["amount"]);
+  const [percentColumns] = useState(["name"]);
   const [leftFixedColumns] = useState([TableEditColumn.COLUMN_TYPE]);
   const [totalSummaryItems] = useState([
-    { columnName: 'name', type: 'avg' },
-    { columnName: 'amount', type: 'sum' },
+    { columnName: "name", type: "avg" },
+    { columnName: "amount", type: "sum" },
   ]);
 
-  const changeAddedRows = value => setAddedRows(
-    value.map(row => (Object.keys(row).length ? row : {
-      amount: 0,
-      name: 0,
-      // tel: new Date().toISOString().split('T')[0],
-      tel: 0,
-      name1: availableValues.name1[0],
-      region: availableValues.region[0],
-      role: availableValues.role[0],
-    })),
-  );
+  const changeAddedRows = (value) =>
+    setAddedRows(
+      value.map((row) =>
+        Object.keys(row).length
+          ? row
+          : {
+              amount: 0,
+              name: 0,
+              // tel: new Date().toISOString().split('T')[0],
+              tel: 0,
+              name1: availableValues.name1[0],
+              region: availableValues.region[0],
+              role: availableValues.role[0],
+            }
+      )
+    );
 
   const deleteRows = (deletedIds) => {
     const rowsForDelete = rows.slice();
     deletedIds.forEach((rowId) => {
-      const index = rowsForDelete.findIndex(row => row.id === rowId);
+      const index = rowsForDelete.findIndex((row) => row.id === rowId);
       if (index > -1) {
         rowsForDelete.splice(index, 1);
       }
@@ -228,7 +246,8 @@ export default () => {
   const commitChanges = ({ added, changed, deleted }) => {
     let changedRows;
     if (added) {
-      const startingAddedId = rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
+      const startingAddedId =
+        rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
       changedRows = [
         ...rows,
         ...added.map((row, index) => ({
@@ -238,7 +257,9 @@ export default () => {
       ];
     }
     if (changed) {
-      changedRows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+      changedRows = rows.map((row) =>
+        changed[row.id] ? { ...row, ...changed[row.id] } : row
+      );
     }
     if (deleted) {
       changedRows = deleteRows(deleted);
@@ -248,15 +269,8 @@ export default () => {
 
   return (
     <Paper>
-      <Grid
-        rows={rows}
-        columns={columns}
-        getRowId={getRowId}
-      >
-        <SortingState
-          sorting={sorting}
-          onSortingChange={getSorting}
-        />
+      <Grid rows={rows} columns={columns} getRowId={getRowId}>
+        <SortingState sorting={sorting} onSortingChange={getSorting} />
         <PagingState
           currentPage={currentPage}
           onCurrentPageChange={setCurrentPage}
@@ -272,9 +286,7 @@ export default () => {
           onAddedRowsChange={changeAddedRows}
           onCommitChanges={commitChanges}
         />
-        <SummaryState
-          totalItems={totalSummaryItems}
-        />
+        <SummaryState totalItems={totalSummaryItems} />
 
         <IntegratedSorting />
         <IntegratedPaging />
@@ -285,18 +297,13 @@ export default () => {
 
         <DragDropProvider />
 
-        <Table
-          columnExtensions={tableColumnExtensions}
-          cellComponent={Cell}
-        />
+        <Table columnExtensions={tableColumnExtensions} cellComponent={Cell} />
         <TableColumnReordering
           order={columnOrder}
           onOrderChange={setColumnOrder}
         />
         <TableHeaderRow showSortingControls />
-        <TableEditRow
-          cellComponent={EditCell}
-        />
+        <TableEditRow cellComponent={EditCell} />
         <TableEditColumn
           width={150}
           showAddCommand={!addedRows.length}
@@ -305,12 +312,8 @@ export default () => {
           commandComponent={Command}
         />
         <TableSummaryRow />
-        <TableFixedColumns
-          leftColumns={leftFixedColumns}
-        />
-        <PagingPanel
-          pageSizes={pageSizes}
-        />
+        <TableFixedColumns leftColumns={leftFixedColumns} />
+        <PagingPanel pageSizes={pageSizes} />
       </Grid>
     </Paper>
   );

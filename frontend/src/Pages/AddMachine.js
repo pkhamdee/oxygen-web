@@ -33,6 +33,9 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 class AddMachine extends React.Component {
+  state = {
+    devices: [],
+  };
   constructor() {
     super();
     this.state = {
@@ -42,7 +45,21 @@ class AddMachine extends React.Component {
 
   onFinish = (values) => {
     console.log(values);
-    this.setState({ redirect: true });
+    this.setState({
+      redirect: true,
+      data: {
+        barcode: values.barcode,
+        status: 4,
+      },
+    });
+    console.log(values.barcode);
+    console.log(values.status);
+    console.log(this.state.data);
+    axios.post("http://localhost:8080/device", this.state.data, {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
   };
 
   render() {
@@ -74,7 +91,7 @@ class AddMachine extends React.Component {
           validateMessages={validateMessages}
         >
           <Form.Item
-            name={["device", "serial number"]}
+            name={["barcode"]}
             label="หมายเลขเครื่อง"
             rules={[
               {
