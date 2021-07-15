@@ -75,7 +75,24 @@ class Dashboard extends React.Component {
     return count;
   }
 
-  returnDevice() {}
+  returnDevice(barcode, deviceId) {
+    let rheader = {
+     headers: {
+         'content-type': 'application/json'
+     }
+    };
+    let rdata = {
+        status: "4",
+        name: "ศูนย์", //tel number
+        deviceId: deviceId,
+        barcode: barcode
+    };
+    console.log("Header");
+    console.log(rheader);
+    console.log("data");
+    console.log(rdata);
+    axios.post("http://localhost:8080/device", rdata, rheader);
+  }
 
   renderTableData() {
     return this.state.devices.map((device, index) => {
@@ -92,18 +109,16 @@ class Dashboard extends React.Component {
             <font color={status == 4 ? "grey" : "white"}>{barcode}</font>
           </td>
           <td>
-            {" "}
             <Button
               variant={status == 2 ? "outline-light" : "outline-error"}
               size="sm"
-              //              onClick="returnFunction()"
+              onClick={() => {this.returnDevice(barcode, deviceId);}}
               disabled={status == 4}
             >
               Return
-            </Button>{" "}
+            </Button>
           </td>
           <td>
-            {" "}
             <Button
               variant={status == 4 ? "outline-success" : "outline-error"}
               size="sm"
@@ -114,7 +129,7 @@ class Dashboard extends React.Component {
               disabled={status == 2}
             >
               Give
-            </Button>{" "}
+            </Button>
           </td>
         </tr>
       );
@@ -122,7 +137,7 @@ class Dashboard extends React.Component {
   }
 
   render() {
-    console.log(sessionStorage.getItem("login"));
+//    console.log(sessionStorage.getItem("login"));
     if (this.state.destination == "give") {
       return (
         <Redirect
@@ -152,9 +167,8 @@ class Dashboard extends React.Component {
               <div className="card-box bg-green">
                 <div className="inner">
                   <h3>
-                    {" "}
                     {this.countKey(this.state.devices, "status", "4")}/
-                    {this.state.devices.length}{" "}
+                    {this.state.devices.length}
                   </h3>
                   <p> จำนวนเครื่องว่าง/ทั้งหมด </p>
                 </div>
