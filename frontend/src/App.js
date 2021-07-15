@@ -23,7 +23,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <div>
             <Navbar />
-          <Route path="/give/:chosenSerial" exact={true} component={Give} />
+          <Route path="/give:?" exact={true} component={Give} />
           <Route path="/return">
             <Return />
           </Route>
