@@ -165,13 +165,13 @@ class Give extends React.Component {
   render() {
     console.log(sessionStorage.getItem("login"));
 
-    // if (sessionStorage.getItem("login") !== "true") {
-    //   return <Redirect push to="/login" />;
-    // } else if (this.state.redirect == true) {
-    //   console.log(sessionStorage.getItem("login"));
-    //   console.log(this.state.redirect);
-    //   return <Redirect push to="/" />;
-    // }
+    if (sessionStorage.getItem("login") !== "true") {
+      return <Redirect push to="/login" />;
+    } else if (this.state.redirect == true) {
+      console.log(sessionStorage.getItem("login"));
+      console.log(this.state.redirect);
+      return <Redirect push to="/" />;
+    }
 
     return (
       // <Layout>
