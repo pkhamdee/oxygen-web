@@ -52,10 +52,11 @@ class Dashboard extends React.Component {
     await this.setState({ destination: "give", chosenSerial: number, deviceId: id });
   };
 
+  
   countKey( obj, key, val ) {
     let count = 0 ;
     obj.forEach(a => {
-        if(a.[key] == val){
+        if(a[key] == val){
             return count += 1 ;
         }
     } ) ;
@@ -114,7 +115,7 @@ class Dashboard extends React.Component {
   render() {
     console.log(sessionStorage.getItem("login"));
     if (this.state.destination == "give") {
-      return <Redirect to={`/give?barcode=${this.state.chosenSerial},id=${this.state.deviceId}`} />;
+      return <Redirect to={`/give/${this.state.chosenSerial}/${this.state.deviceId}`} />;
     } else if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     }

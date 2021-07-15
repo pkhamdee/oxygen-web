@@ -69,9 +69,11 @@ class Give extends React.Component {
     super();
     this.state = {
       redirect: false,
-      serial: props.match.params.chosenSerial,
+      serial: props.match.params.barcode,
+      id: props.match.params.id
     };
-    console.log(props.match.params.chosenSerial);
+    console.log(props.match.params.barcode);
+    console.log(props.match.params.id);
   }
 
   onFinish = (values) => {
