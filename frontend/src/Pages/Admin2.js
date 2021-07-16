@@ -43,42 +43,86 @@ function handleChangeRole(role) {
 }
 
 class Admin2 extends React.Component {
-  state = {
-    redirect: false,
-    users: [],
-  };
-
-  componentDidMount() {
+  constructor() {
+    super();
     console.log("here");
+    this.state = {
+      redirect: false,
+      users: [],
+      data2: {},
+      data: {},
+      data3: "x",
+    };
     axios.get("http://localhost:8080/users").then((ures) => {
       const users = ures.data.content;
       this.setState({
         users: ures.data.content,
       });
-      console.log(ures.data.content);
     });
   }
 
-  onFinish = async (values) => {
-    console.log(this.state.users)
+  onFinish = (values) => {
     this.setState({
       redirect: true,
+      data: {
+        type: values.role,
+        name: values.name,
+      },
+    });
+
+    /////////////////////////////////////////////// name is userId
+    let id = this.state.data.name;
+    console.log("here" + id);
+    let url2 = "http://localhost:8080/user/" + this.state.data.name;
+    axios.get(url2).then((ures) => {
+      var data2 = {
+        address: ures.data.address,
+        firstName: ures.data.firstName,
+        gender: ures.data.gender,
+        id: ures.data.id,
+        lastName: ures.data.lastName,
+        location: ures.data.location,
+        passwd: ures.data.passwd,
+        phone: ures.data.phone,
+        serviceDate: ures.data.serviceDate,
+        serviceRequestDate: ures.data.serviceRequestDate,
+        severity: ures.data.severity,
+        status: ures.data.status,
+        statusDate: ures.data.statusDate,
+        type: this.state.data.type,
+        // type: ures.data.type,
+        userName: ures.data.userName,
+      };
+
+      // const myObj = JSON.parse(data2);
+
+      console.log(this.state.data.type);
+      console.log(data2);
+      console.log(this.data2);
+      console.log(this.state.data3);
+
+      // Send a put request
+      let url = "http://localhost:8080/user/" + this.state.data.name;
+      axios
+        .put(url, data2, {
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+        .then((response) => {
+          console.log(response);
+        });
     });
   };
 
   render() {
-   
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     } else if (this.state.redirect == true) {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
       return <Redirect push to="/" />;
     }
-    
 
     const options = this.state.users;
-
     return (
       <Card>
         <h1>ตั้งค่าผู้ใช้งาน</h1>
@@ -105,7 +149,6 @@ class Admin2 extends React.Component {
               {options.map((option) => (
                 <option name={option.firstName} key={option.id}>
                   {option.firstName + " " + option.lastName}
-                  {console.log(option)}
                 </option>
               ))}
             </Select>
@@ -126,14 +169,16 @@ class Admin2 extends React.Component {
               onChange={handleChangeRole}
             >
               ระบุชื่อตำแหน่ง
-              <Option role="1" key="1">ผู้ดูแล</Option>
-              <Option role="2" key="2">อาสาสมัคร</Option>
+              <Option role="1" key="1">
+                ผู้ดูแล
+              </Option>
+              <Option role="2" key="2">
+                อาสาสมัคร
+              </Option>
             </Select>
           </Form.Item>
 
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-            
-
             <Button
               type="primary"
               htmlType="submit"
