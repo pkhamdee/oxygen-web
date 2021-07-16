@@ -90,7 +90,6 @@ class Admin2 extends React.Component {
         status: ures.data.status,
         statusDate: ures.data.statusDate,
         type: this.state.data.type,
-        // type: ures.data.type,
         userName: ures.data.userName,
       };
 
