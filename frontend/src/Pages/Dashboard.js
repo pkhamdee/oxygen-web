@@ -17,6 +17,7 @@ class Dashboard extends React.Component {
     openModal: false,
     barcode: null,
     deviceId: null,
+    info: {}
   };
 
   componentDidMount() {
@@ -27,6 +28,8 @@ class Dashboard extends React.Component {
         this.setState({ devices, users });
       });
     });
+    let temp = JSON.parse(sessionStorage.getItem("info"))
+    this.setState({info: temp})
   }
 
   componentDidUpdate() {
