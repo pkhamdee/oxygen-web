@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Card, Layout } from "antd";
@@ -33,54 +33,59 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 class AddMachine extends React.Component {
-  state = {
-    devices: [],
-  };
+  
   constructor() {
     super();
     this.state = {
       redirect: false,
+      data: {},
+      id: JSON.parse(sessionStorage.getItem("info")).id,
+      data2: {}
     };
   }
 
   onFinish = (values) => {
-    console.log(values);
     this.setState({
       redirect: true,
       data: {
         barcode: values.barcode,
         status: 4,
+        userId: this.state.id
       },
     });
-    console.log(values.barcode);
-    console.log(values.status);
-    console.log(this.state.data);
+
     axios.post("http://localhost:8080/device", this.state.data, {
       headers: {
         "content-type": "application/json",
       },
+    }).then((res) => {
+      this.setState({
+        data2: {
+          barcode: values.barcode,
+          status: 4,
+          user: {
+            id: this.state.id
+          }
+        },
+      });
+      axios.put("http://localhost:8080/device/" + res.data.id, this.state.data2, {
+        headers: {
+          "content-type": "application/json",
+        },
+      });
     });
   };
 
   render() {
-    console.log(this.state.redirect);
+
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     } else if (this.state.redirect == true) {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
+     
       return <Redirect push to="/" />;
     }
 
     return (
-      // <Layout>
-      //   <Header className="background">
-      //     <div className="menubar">
-      //       {/* <Navbar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
-      //     </div>
-      //   </Header>
-
-      //   <Content className="background">
       <Card>
         <h1>เพิ่มเครื่องใหม่</h1>
 
