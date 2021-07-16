@@ -1,19 +1,3 @@
-//  import React from "react";
-// //  import GiveForm2 from '../components/GiveForm2'
-//  import GiveForm from '../components/GiveForm'
-//  import SideBar from "../components/sidebar";
-
-//  function Give() {
-//    return (
-//      <div>
-//        <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-//        <GiveForm></GiveForm>
-//      </div>
-//    );
-//  }
-
-//  export default Give;
-
 import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
@@ -81,18 +65,13 @@ class Give extends React.Component {
         severity: 0,
         type: 3,
       },
-      dataTrans: {
-        deviceId: null,
-        deivce_location: null,
-        endDate: null,
-        startDate: null,
-        userId: null,
-      },
+
       dataUpdate: {
         deviceId: props.match.params.id,
         status: 2,
         name: null,
         barcode: props.match.params.barcode,
+        userId: {}
       },
     };
   }
@@ -125,64 +104,40 @@ class Give extends React.Component {
         },
       })
       .then((res) => {
-        console.log(res);
+        
         this.setState({
-          dataTrans: {
-            deviceId: this.props.match.params.id,
-            deivce_location: null,
-            endDate: values.dateReturn._d,
-            startDate: values.dateGive._d,
-            userId: res.data.userId,
-          },
           dataUpdate: {
-            deviceId: this.props.match.params.id,
+            // deviceId: this.props.match.params.id,
             status: 2,
             name: values.user.phone,
             barcode: this.props.match.params.barcode,
+            user: {
+              id: res.data.userId,
+            },
           },
         });
+        
 
         axios
-          .post("http://localhost:8080/device/", this.state.dataUpdate, {
+          .put("http://localhost:8080/device/" + this.state.deviceId, this.state.dataUpdate, {
             headers: {
               "content-type": "application/json",
             },
           })
-          .then(console.log);
+          
 
-        axios
-          .post("http://localhost:8080/userdevice", this.state.dataTrans, {
-            headers: {
-              "content-type": "application/json",
-            },
-          })
-          .then((rs) => {
-            console.log(rs);
-          });
       });
   };
 
   render() {
-    console.log(sessionStorage.getItem("login"));
 
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     } else if (this.state.redirect == true) {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
       return <Redirect push to="/" />;
     }
 
     return (
-      // <Layout>
-      //   <Header className="background">
-      //     <div className="menubar">
-      //       {/* <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} /> */}
-      //     </div>
-      //   </Header>
-
-      //   <Content className="background">
-      //     <br></br>
       <Card>
         <h1>ฟอร์ม</h1>
         <h5>*กรุณากรอกข้อมูลของผู้ป่วยตามจริง</h5>
@@ -223,9 +178,9 @@ class Give extends React.Component {
           <Form.Item name={["user", "phone"]} label="เบอร์โทร">
             <Input />
           </Form.Item>
-          <Form.Item name={["user", "address"]} label="ที่อยู่">
+          <Form.Item name={["user","address"]} label="ที่อยู่">
             <Input.TextArea />
-            <button>map</button>
+            {/* <button>map</button> */}
           </Form.Item>
 
           <ColoredLine color="red" />
