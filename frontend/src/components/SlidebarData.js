@@ -26,7 +26,7 @@ export const SidebarData = [
   },
   {
     title: "ตั้งค่าผู้ใช้งาน",
-    path: "/Admin",
+    path: "/Admin2",
     icon: <FaIcons.FaUserPlus />,
     cName: "nav-text",
   },

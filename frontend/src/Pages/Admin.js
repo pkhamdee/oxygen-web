@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SortingState,
   EditingState,
@@ -39,7 +39,14 @@ import { HighlightedCell } from "../components/highlighted-cell";
 import { CurrencyTypeProvider } from "../components/currency-type-provider";
 import { PercentTypeProvider } from "../components/percent-type-provider";
 
-import { generateRows, globalSalesValues } from "../demo-data/generator";
+import {
+  generateRows,
+  globalSalesValues2,
+  valueName,
+  valueTel,
+  valueRole,
+} from "../demo-data/generator";
+import axios from "axios";
 
 const styles = (theme) => ({
   lookupEditCell: {
@@ -110,10 +117,16 @@ const Command = ({ id, onExecute }) => {
 };
 
 const availableValues = {
-  name1: globalSalesValues.name1,
-  region: globalSalesValues.region,
-  role: globalSalesValues.role,
+  name1: globalSalesValues2.name1,
+  region: globalSalesValues2.region,
+  role: globalSalesValues2.role,
 };
+
+// const availableValues = {
+//   name1: valueName(),
+//   tel: valueTel(),
+//   role: valueRole(),
+// };
 
 const LookupEditCellBase = ({
   availableColumnValues,
@@ -169,55 +182,126 @@ const EditCell = (props) => {
 
 const getRowId = (row) => row.id;
 
-export default () => {
-  const [columns] = useState([
-    { name: "name1", title: "ชื่อ-นามสกุล" },
-    // { name: 'region', title: 'Region' },
-    // { name: 'amount', title: 'Sale Amount' },
-    // { name: 'name', title: 'ชื่อ-นามสกุล' },
-    { name: "tel", title: "เบอร์ติดต่อ" },
-    { name: "role", title: "ตำแหน่ง" },
-  ]);
-  const [rows, setRows] = useState(
-    generateRows({
-      columnValues: { id: ({ index }) => index, ...globalSalesValues },
-      length: 12,
-    })
-  );
-  const [tableColumnExtensions] = useState([
-    { columnName: "name1", width: 200 },
-    { columnName: "region", width: 180 },
-    { columnName: "amount", width: 180, align: "right" },
-    { columnName: "name", width: 180 },
-    { columnName: "tel", width: 180 },
-    { columnName: "role", width: 200 },
-  ]);
-  const [sorting, getSorting] = useState([]);
-  const [editingRowIds, getEditingRowIds] = useState([]);
-  const [addedRows, setAddedRows] = useState([]);
-  const [rowChanges, setRowChanges] = useState({});
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(0);
-  const [pageSizes] = useState([5, 10, 0]);
-  const [columnOrder, setColumnOrder] = useState([
-    "name1",
-    "region",
-    "amount",
-    "name",
-    "tel",
-    "role",
-  ]);
-  const [currencyColumns] = useState(["amount"]);
-  const [percentColumns] = useState(["name"]);
-  const [leftFixedColumns] = useState([TableEditColumn.COLUMN_TYPE]);
-  const [totalSummaryItems] = useState([
-    { columnName: "name", type: "avg" },
-    { columnName: "amount", type: "sum" },
-  ]);
+// export default () => {
+class Admin extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: [],
+      columns: [
+        { name: "name1", title: "ชื่อ-นามสกุล" },
+        // { name: 'region', title: 'Region' },
+        // { name: 'amount', title: 'Sale Amount' },
+        // { name: 'name', title: 'ชื่อ-นามสกุล' },
+        { name: "tel", title: "เบอร์ติดต่อ" },
+        { name: "role", title: "ตำแหน่ง" },
+      ],
+      rows: generateRows({
+        columnValues: { id: ({ index }) => index, ...globalSalesValues2 },
+        length: 12,
+      }),
+      tableColumnExtensions: [
+        { columnName: "name1", width: 200 },
+        { columnName: "region", width: 180 },
+        { columnName: "amount", width: 180, align: "right" },
+        { columnName: "name", width: 180 },
+        { columnName: "tel", width: 180 },
+        { columnName: "role", width: 200 },
+      ],
+      sorting: [],
+      editingRowIds: [],
+      addedRows: [],
+      rowChanges: {},
+      currentPage: 0,
+      pageSize: 0,
+      pageSizes: [5, 10, 0],
+      columnOrder: ["name1", "region", "amount", "name", "tel", "role"],
+      currencyColumns: ["amount"],
+      percentColumns: ["name"],
+      leftFixedColumns: [TableEditColumn.COLUMN_TYPE],
+      totalSummaryItems: [
+        { columnName: "name", type: "avg" },
+        { columnName: "amount", type: "sum" },
+      ],
+    };
+  }
 
-  const changeAddedRows = (value) =>
-    setAddedRows(
-      value.map((row) =>
+  // const [users, updateUsers] = React.useState([]);
+
+  // React.useEffect(function effectFunction() {
+  //   async function fetchBooks() {
+  //     const response = await axios.get("http://localhost:8080/users");
+  //     const json = await response.data.content;
+  //     updateUsers(json);
+  //   }
+  //   fetchBooks().then(console.log(users));
+  // }, []);
+
+  // let a = axios.get("http://localhost:8080/users").then((res) => {
+  //   a = res.data.content;
+  // });
+  // const [users, setUsers] = await useState(a);
+  // const [users, setUsers] = useState([]);
+
+  // const [columns] = useState([
+  //   { name: "name1", title: "ชื่อ-นามสกุล" },
+  //   // { name: 'region', title: 'Region' },
+  //   // { name: 'amount', title: 'Sale Amount' },
+  //   // { name: 'name', title: 'ชื่อ-นามสกุล' },
+  //   { name: "tel", title: "เบอร์ติดต่อ" },
+  //   { name: "role", title: "ตำแหน่ง" },
+  // ]);
+  // const [rows, setRows] = useState(
+  //   generateRows({
+  //     columnValues: { id: ({ index }) => index, ...globalSalesValues },
+  //     length: 12,
+  //   })
+  // );
+  // const [tableColumnExtensions] = useState([
+  //   { columnName: "name1", width: 200 },
+  //   { columnName: "region", width: 180 },
+  //   { columnName: "amount", width: 180, align: "right" },
+  //   { columnName: "name", width: 180 },
+  //   { columnName: "tel", width: 180 },
+  //   { columnName: "role", width: 200 },
+  // ]);
+  // const [sorting, getSorting] = useState([]);
+  // const [editingRowIds, getEditingRowIds] = useState([]);
+  // const [addedRows, setAddedRows] = useState([]);
+  // const [rowChanges, setRowChanges] = useState({});
+  // const [currentPage, setCurrentPage] = useState(0);
+  // const [pageSize, setPageSize] = useState(0);
+  // const [pageSizes] =    useState([5, 10, 0]);
+  // const [columnOrder, setColumnOrder] = useState([
+  //   "name1",
+  //   "region",
+  //   "amount",
+  //   "name",
+  //   "tel",
+  //   "role",
+  // ]);
+  // const [currencyColumns] = useState(["amount"]);
+  // const [percentColumns] = useState(["name"]);
+
+  // const [leftFixedColumns] = useState([TableEditColumn.COLUMN_TYPE]);
+  // const [totalSummaryItems] = useState([
+  //   { columnName: "name", type: "avg" },
+  //   { columnName: "amount", type: "sum" },
+  // ]);
+
+  // this.setState({
+  //   addedRows:
+  // })
+
+  // setCurrentPage = () => {
+  //   this.setState({
+  //     currentPage:
+  //   })
+  // };
+
+  changeAddedRows = (value) =>
+    this.setState({
+      addedRows: value.map((row) =>
         Object.keys(row).length
           ? row
           : {
@@ -229,11 +313,27 @@ export default () => {
               region: availableValues.region[0],
               role: availableValues.role[0],
             }
-      )
-    );
+      ),
+    });
 
-  const deleteRows = (deletedIds) => {
-    const rowsForDelete = rows.slice();
+  // setAddedRows(
+  //   value.map((row) =>
+  //     Object.keys(row).length
+  //       ? row
+  //       : {
+  //           amount: 0,
+  //           name: 0,
+  //           // tel: new Date().toISOString().split('T')[0],
+  //           tel: 0,
+  //           name1: availableValues.name1[0],
+  //           region: availableValues.region[0],
+  //           role: availableValues.role[0],
+  //         }
+  //   )
+  // );
+
+  deleteRows = (deletedIds) => {
+    const rowsForDelete = this.state.rows.slice();
     deletedIds.forEach((rowId) => {
       const index = rowsForDelete.findIndex((row) => row.id === rowId);
       if (index > -1) {
@@ -243,13 +343,15 @@ export default () => {
     return rowsForDelete;
   };
 
-  const commitChanges = ({ added, changed, deleted }) => {
+  commitChanges = ({ added, changed, deleted }) => {
     let changedRows;
     if (added) {
       const startingAddedId =
-        rows.length > 0 ? rows[rows.length - 1].id + 1 : 0;
+        this.state.rows.length > 0
+          ? this.state.rows[this.state.rows.length - 1].id + 1
+          : 0;
       changedRows = [
-        ...rows,
+        ...this.state.rows,
         ...added.map((row, index) => ({
           id: startingAddedId + index,
           ...row,
@@ -257,64 +359,147 @@ export default () => {
       ];
     }
     if (changed) {
-      changedRows = rows.map((row) =>
+      changedRows = this.state.rows.map((row) =>
         changed[row.id] ? { ...row, ...changed[row.id] } : row
       );
     }
     if (deleted) {
-      changedRows = deleteRows(deleted);
+      changedRows = this.deleteRows(deleted);
     }
-    setRows(changedRows);
+
+    this.setState({
+      rows: changedRows,
+    });
+    // setRows(changedRows);
   };
 
-  return (
-    <Paper>
-      <Grid rows={rows} columns={columns} getRowId={getRowId}>
-        <SortingState sorting={sorting} onSortingChange={getSorting} />
-        <PagingState
-          currentPage={currentPage}
-          onCurrentPageChange={setCurrentPage}
-          pageSize={pageSize}
-          onPageSizeChange={setPageSize}
-        />
-        <EditingState
-          editingRowIds={editingRowIds}
-          onEditingRowIdsChange={getEditingRowIds}
-          rowChanges={rowChanges}
-          onRowChangesChange={setRowChanges}
-          addedRows={addedRows}
-          onAddedRowsChange={changeAddedRows}
-          onCommitChanges={commitChanges}
-        />
-        <SummaryState totalItems={totalSummaryItems} />
+  // useEffect(() => {
+  // axios.get("http://localhost:8080/users").then((res) => {
+  //   // console.log(res);
+  //   // console.log(res.data.content.length);
+  //   setUsers(res.data.content);
+  //   console.log(users);
+  // for (let i = 0; i < res.data.content.length; i++) {
+  //   console.log(res.data.content[i]);
+  // }
+  // address: null;
+  // firstName: "MR1";
+  // gender: 0;
+  // lastName: "Sur1";
+  // location: null;
+  // passwd: null;
+  // phone: null;
+  // serviceDate: null;
+  // serviceRequestDate: null;
+  // severity: 0;
+  // status: 0;
+  // statusDate: null;
+  // type: 3;
+  // userId: 18;
+  // userName: null;
 
-        <IntegratedSorting />
-        <IntegratedPaging />
-        <IntegratedSummary />
+  ////////////////////////////////////////////////////
+  /*onFinish = (values) => {
+    console.log(values);
+    this.setState({
+      redirect: true,
+      data: {
+        barcode: values.barcode,
+        status: 4,
+      },
+    });
+    console.log(values.barcode);
+    console.log(values.status);
+    console.log(this.state.data);
+    axios.post("http://localhost:8080/device", this.state.data, {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  };*/
+  ////////////////////////////////////////////////////
+  render() {
+    // let res;
+    // axios.get("http://localhost:8080/users").then((res) => {
+    //   this.setState({
+    //     users: res.data.content,
+    //   });
+    // });
+    // //   // console.log(res);
+    // //   // console.log(res.data.content.length);
+    // //   setUsers(res.data.content);
+    // //   console.log(users);
+    // let names = [];
+    // let tels = [];
+    // let roles = [];
+    // for (let i = 0; i < res.data.content.length; i++) {
+    //   console.log(res.data.content[i]);
+    //   names.push(res.data.content[i].firstName + res.data.content[i].lastName);
+    //   tels.push(res.data.content[i].phone);
+    //   roles.push(res.data.content[i].type);
+    // }
 
-        <CurrencyTypeProvider for={currencyColumns} />
-        <PercentTypeProvider for={percentColumns} />
+    return (
+      <Paper>
+        <Grid
+          rows={this.state.rows}
+          columns={this.state.columns}
+          getRowId={getRowId}
+        >
+          <SortingState
+            sorting={this.state.sorting}
+            onSortingChange={this.getSorting}
+          />
+          <PagingState
+            currentPage={this.state.currentPage}
+            // onCurrentPageChange={this.state.setCurrentPage}
+            pageSize={this.state.pageSize}
+            // onPageSizeChange={this.state.setPageSize}
+          />
+          <EditingState
+            editingRowIds={this.state.editingRowIds}
+            onEditingRowIdsChange={this.state.getEditingRowIds}
+            rowChanges={this.state.rowChanges}
+            // onRowChangesChange={this.state.setRowChanges}
+            addedRows={this.state.addedRows}
+            onAddedRowsChange={this.state.changeAddedRows}
+            onCommitChanges={this.state.commitChanges}
+          />
+          <SummaryState totalItems={this.state.totalSummaryItems} />
 
-        <DragDropProvider />
+          <IntegratedSorting />
+          <IntegratedPaging />
+          <IntegratedSummary />
 
-        <Table columnExtensions={tableColumnExtensions} cellComponent={Cell} />
-        <TableColumnReordering
-          order={columnOrder}
-          onOrderChange={setColumnOrder}
-        />
-        <TableHeaderRow showSortingControls />
-        <TableEditRow cellComponent={EditCell} />
-        <TableEditColumn
-          width={150}
-          showAddCommand={!addedRows.length}
-          showEditCommand
-          showDeleteCommand
-          commandComponent={Command}
-        />
-        <TableSummaryRow />
-        <TableFixedColumns leftColumns={leftFixedColumns} />
-        <PagingPanel pageSizes={pageSizes} />
-      </Grid>
-    </Paper>
-  );
-};
+          <CurrencyTypeProvider for={this.state.currencyColumns} />
+          <PercentTypeProvider for={this.state.percentColumns} />
+
+          <DragDropProvider />
+
+          <Table
+            columnExtensions={this.state.tableColumnExtensions}
+            cellComponent={Cell}
+          />
+          <TableColumnReordering
+            order={this.state.columnOrder}
+            // onOrderChange={this.state.setColuthis.mnOrder}
+          />
+          <TableHeaderRow showSortingControls />
+          <TableEditRow cellComponent={EditCell} />
+          <TableEditColumn
+            width={150}
+            showAddCommand={!this.state.addedRows.length}
+            showEditCommand
+            showDeleteCommand
+            commandComponent={Command}
+          />
+          <TableSummaryRow />
+          <TableFixedColumns leftColumns={this.state.leftFixedColumns} />
+          <PagingPanel pageSizes={this.state.pageSizes} />
+        </Grid>
+      </Paper>
+    );
+  }
+}
+
+export default Admin;
