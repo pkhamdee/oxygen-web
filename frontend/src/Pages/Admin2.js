@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Card, Layout, Select } from "antd";
 import SideBar from "../components/sidebar";
-import "../css/mydiv.css";
+// import "../css/mydiv.css";
 import { Header, Body, Content } from "antd/lib/layout/layout";
 
 import Navbar from "../components/Navbar";
@@ -44,7 +44,7 @@ function handleChangeRole(role) {
 
 class Admin2 extends React.Component {
   state = {
-    //redirect: false,
+    redirect: false,
     users: [],
   };
 
@@ -55,36 +55,19 @@ class Admin2 extends React.Component {
       this.setState({
         users: ures.data.content,
       });
+      console.log(ures.data.content);
     });
   }
 
   onFinish = async (values) => {
-    console.log("1");
-    console.log(values);
+    console.log(this.state.users)
     this.setState({
       redirect: true,
     });
-    // await axios.get("http://localhost:8080/users").then((ures) => {
-    //   const users = ures.data.content;
-    //   console.log(users);
-    //   this.setState({
-    //     data: users,
-    //   });
-    // });
-    // console.log(this.state.data);
-    //console.log(values.barcode);
   };
 
   render() {
-    // axios.get("http://localhost:8080/users").then((ures) => {
-    //   this.setState({
-    //     data: ures.data.content,
-    //   });
-    //   //   console.log(this.state.data[0].firstName);
-    //   //   console.log(this.state.data[0]);
-    // });
-    // console.log(this.state.data[0].firstName);
-    console.log(this.state.redirect);
+   
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     } else if (this.state.redirect == true) {
@@ -92,6 +75,7 @@ class Admin2 extends React.Component {
       console.log(this.state.redirect);
       return <Redirect push to="/" />;
     }
+    
 
     const options = this.state.users;
 
@@ -100,37 +84,55 @@ class Admin2 extends React.Component {
         <h1>ตั้งค่าผู้ใช้งาน</h1>
         <Form
           {...layout}
-          //name="nest-messages"
+          name="nest-messages"
           onFinish={this.onFinish}
           validateMessages={validateMessages}
         >
-          <h8>ระบุชื่อ</h8>
-          <br></br> <br></br>
-          <Select
-            defaultValue="ชื่อผู้ใช้งาน"
-            style={{ width: 200 }}
-            onChange={handleChangeName}
+          <Form.Item
+            name="name"
+            label="ชื่อผู้ใช้"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            {options.map((option) => (
-              <option name={option.firstName}>
-                {option.firstName + " " + option.lastName}
-              </option>
-            ))}
-          </Select>
-          <br></br> <br></br>
-          <h8>ระบุตำแหน่ง</h8>
-          <br></br> <br></br>
-          <Select
-            defaultValue="ตำแหน่ง"
-            style={{ width: 200 }}
-            onChange={handleChangeRole}
+            <Select
+              defaultValue="ชื่อผู้ใช้งาน"
+              style={{ width: 200 }}
+              onChange={handleChangeName}
+            >
+              {options.map((option) => (
+                <option name={option.firstName} key={option.id}>
+                  {option.firstName + " " + option.lastName}
+                  {console.log(option)}
+                </option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="role"
+            label="ตำแหน่ง"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            <Option role="1">ผู้ดูแล</Option>
-            <Option role="2">อาสาสมัคร</Option>
-          </Select>
+            <Select
+              defaultValue="ตำแหน่ง"
+              style={{ width: 200 }}
+              onChange={handleChangeRole}
+            >
+              ระบุชื่อตำแหน่ง
+              <Option role="1" key="1">ผู้ดูแล</Option>
+              <Option role="2" key="2">อาสาสมัคร</Option>
+            </Select>
+          </Form.Item>
+
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-            <br></br>
-            <br></br>
+            
 
             <Button
               type="primary"
