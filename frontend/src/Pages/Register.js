@@ -74,7 +74,6 @@ class Register extends React.Component {
       lastname = "";
     }
     this.setState({
-      redirect: true,
       data: {
         firstName: firstname,
         lastName: lastname,
@@ -91,15 +90,15 @@ class Register extends React.Component {
       headers: {
         "content-type": "application/json",
       },
+    }).then((res) => {
+      this.setState({ redirect: true });
     });
   };
 
   render() {
-    // if (this.state.redirect == true) {
-    //   console.log(sessionStorage.getItem("login"));
-    //   console.log(this.state.redirect);
-    //   return <Redirect push to="/login" />;
-    // }
+    if (this.state.redirect == true) {
+      return <Redirect push to="/" />;
+    }
 
     return (
      <div>
