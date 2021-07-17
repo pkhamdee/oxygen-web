@@ -130,7 +130,6 @@ class Give extends React.Component {
   };
 
   render() {
-
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     } else if (this.state.redirect == true) {

@@ -27,19 +27,19 @@ class Login extends React.Component {
 
   onFinish = (values) => {
     sessionStorage.setItem("login", "true");
-    try{
-    axios
-      .get("http://localhost:8080/user/username/" + values.username)
-      .then((res) => {
-        if (values.password == res.data.passwd) {
-          delete res.data ["passwd"];
-          sessionStorage.setItem("info", JSON.stringify(res.data));
-          this.setState({ redirect: "home" });
-        } else {
-          this.onFinishFailed("Wrong Password");
-          this.setState({ shouldHide: false });
-        }
-      });
+    try {
+      axios
+        .get("http://localhost:8080/user/username/" + values.username)
+        .then((res) => {
+          if (values.password == res.data.passwd) {
+            delete res.data["passwd"];
+            sessionStorage.setItem("info", JSON.stringify(res.data));
+            this.setState({ redirect: "home" });
+          } else {
+            this.onFinishFailed("Wrong Password");
+            this.setState({ shouldHide: false });
+          }
+        });
     } catch {
       this.setState({ shouldHide: false });
     }
