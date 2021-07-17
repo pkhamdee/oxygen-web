@@ -41,61 +41,75 @@ class AddMachine extends React.Component {
       id: JSON.parse(sessionStorage.getItem("info")).id,
       phone: JSON.parse(sessionStorage.getItem("info")).phone,
       data2: {},
-      shouldHide: true
+      shouldHide: true,
+      barcodeSame: false,
     };
   }
 
   onFinish = async (values) => {
-    this.setState({
-      // redirect: true,
-      data: {
-        barcode: values.barcode,
-        status: 4,
-        user_id: this.state.id,
-        name: this.state.phone
-      },
-    });
-
+    this.setState({ shouldHide: true, barcodeSame: false });
     await axios
-      .post("http://localhost:8080/device", this.state.data, {
-        headers: {
-          "content-type": "application/json",
-        },
-      })
+      .get("http://localhost:8080/devices")
       .then((res) => {
-        this.setState({
-          data2: {
-            barcode: values.barcode,
-            status: 4,
-            user: {
-              id: this.state.id,
-            },
-            name: this.state.phone
-          },
-        });
-        axios.put(
-          "http://localhost:8080/device/" + res.data.id,
-          this.state.data2,
-          {
-            headers: {
-              "content-type": "application/json",
-            },
+        for (let i = 0; i < res.data.content.length; i++) {
+          if (values.barcode == res.data.content[i].barcode) {
+            this.setState({ barcodeSame: true });
+            return;
           }
-        )
-      }).then(res => {
-        this.setState({
-          shouldHide: false
-        })
+        }
+      })
+      .then(() => {
+        if (this.state.barcodeSame == false) {
+          this.setState({
+            // redirect: true,
+            data: {
+              barcode: values.barcode,
+              status: 4,
+              user_id: this.state.id,
+              name: this.state.phone,
+            },
+          });
+
+          axios
+            .post("http://localhost:8080/device", this.state.data, {
+              headers: {
+                "content-type": "application/json",
+              },
+            })
+            .then((res) => {
+              this.setState({
+                data2: {
+                  barcode: values.barcode,
+                  status: 4,
+                  user: {
+                    id: this.state.id,
+                  },
+                  name: this.state.phone,
+                },
+              });
+              axios.put(
+                "http://localhost:8080/device/" + res.data.id,
+                this.state.data2,
+                {
+                  headers: {
+                    "content-type": "application/json",
+                  },
+                }
+              );
+            })
+            .then((res) => {
+              this.setState({
+                shouldHide: false,
+              });
+            });
+        }
       });
   };
 
   render() {
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
-    } 
-    // else if (this.state.redirect == true) {
-    //   return <Redirect push to="/" />;
-    // }
+    }
 
     return (
       <Card>
@@ -148,6 +162,11 @@ class AddMachine extends React.Component {
           className={this.state.shouldHide ? "hidden" : null}
           message="เพิ่มเครื่องใหม่แล้ว"
           type="success"
+        />
+        <Alert
+          className={!this.state.barcodeSame ? "hidden" : null}
+          message="มีหมายเลขเครื่องนี้ในระบบแล้ว"
+          type="error"
         />
       </Card>
       //   </Content>
