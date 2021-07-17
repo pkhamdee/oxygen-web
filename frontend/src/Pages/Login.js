@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Card, Alert } from "antd";
 import "../css/mydiv.css";
-import { Header, Body, Content } from "antd/lib/layout/layout";
+import Layout, { Header, Body, Content } from "antd/lib/layout/layout";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -19,21 +19,30 @@ class Login extends React.Component {
     super();
     this.state = {
       redirect: "",
-      user: "",
-      password: "",
+      shouldHide: true,
     };
     sessionStorage.setItem("login", "false");
-    console.log(sessionStorage.getItem("login"));
+    sessionStorage.setItem("info", "");
   }
 
   onFinish = (values) => {
-    // console.log("Success:", values);
-    // console.log("In finish handler");
     sessionStorage.setItem("login", "true");
-    // console.log(values.username);
-    // console.log(values.password);
-    // console.log(sessionStorage.getItem("login"));
-    this.setState({ redirect: "home" });
+    try {
+      axios
+        .get("http://localhost:8080/user/username/" + values.username)
+        .then((res) => {
+          if (values.password == res.data.passwd) {
+            delete res.data["passwd"];
+            sessionStorage.setItem("info", JSON.stringify(res.data));
+            this.setState({ redirect: "home" });
+          } else {
+            this.onFinishFailed("Wrong Password");
+            this.setState({ shouldHide: false });
+          }
+        });
+    } catch {
+      this.setState({ shouldHide: false });
+    }
   };
 
   onFinishFailed = (errorInfo) => {
@@ -46,78 +55,84 @@ class Login extends React.Component {
 
   render() {
     if (this.state.redirect == "home") {
-      // console.log(sessionStorage.getItem("login"));
-      // console.log(this.state.redirect);
       return <Redirect push to="/" />;
     } else if (this.state.redirect == "register") {
-      // console.log(sessionStorage.getItem("login"));
-      // console.log(this.state.redirect);
       return <Redirect push to="/register" />;
     }
 
     return (
-      <div>
-        <h1>Login</h1>
-        <Form
-          name="basic"
-          labelCol={{
-            span: 8,
-          }}
-          wrapperCol={{
-            span: 16,
-          }}
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={this.onFinish}
-          onFinishFailed={this.onFinishFailed}
-        >
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[
-              {
-                required: true,
-                message: "Please input your username!",
-              },
-            ]}
+      <Layout>
+        <Header></Header>
+        <Content>
+          <br></br>
+          <h1>Login</h1>
+          <Form
+            name="basic"
+            labelCol={{
+              span: 8,
+            }}
+            wrapperCol={{
+              span: 16,
+            }}
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={this.onFinish}
+            onFinishFailed={this.onFinishFailed}
           >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your password!",
-              },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item {...tailLayout}>
-            <Button
-              htmlType="submit"
-              type="primary"
-              onClick={() => this.loginHandler}
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your username!",
+                },
+              ]}
             >
-              Login
-            </Button>
-            <Button
-              htmlType="button"
-              style={{
-                margin: "0 8px",
-              }}
-              onClick={() => this.registerHandler()}
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
             >
-              Register
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+              <Input.Password />
+            </Form.Item>
+
+            <Form.Item {...tailLayout}>
+              <Button
+                htmlType="submit"
+                type="primary"
+                onClick={() => this.loginHandler}
+              >
+                Login
+              </Button>
+
+              <Button
+                htmlType="button"
+                style={{
+                  margin: "8px",
+                }}
+                onClick={() => this.registerHandler()}
+              >
+                Register
+              </Button>
+            </Form.Item>
+          </Form>
+          <Alert
+            className={this.state.shouldHide ? "hidden" : null}
+            message="Username หรือ Password ผิด กรุณาใส่อีกครั้ง"
+            type="error"
+          />
+        </Content>
+      </Layout>
     );
   }
 }
