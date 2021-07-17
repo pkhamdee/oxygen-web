@@ -11,8 +11,8 @@ import { IconContext } from "react-icons";
 import { Link } from "react-router-dom";
 
 // DATA FILE
-import { SidebarData } from "./SlidebarData";
-
+import { SidebarData1 } from "./SlidebarData";
+import { SidebarData2 } from "./SlidebarData2";
 // STYLES
 import "../css/Navbar.css";
 
@@ -20,6 +20,13 @@ export default function Navbar() {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
+
+  let role = JSON.parse(sessionStorage.getItem("info")).type;
+  if (role == "1") {
+    var SidebarData = SidebarData1;
+  } else if (role == "2") {
+    var SidebarData = SidebarData2;
+  }
 
   return (
     <>
