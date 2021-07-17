@@ -116,7 +116,7 @@ class Login extends React.Component {
               </Button>
 
               <Button
-                htmlType="button"
+                htmlType="button" disabled
                 style={{
                   margin: "8px",
                 }}

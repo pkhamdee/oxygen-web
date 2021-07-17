@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
-import { Form, Input, InputNumber, Button, Card } from "antd";
+import { Form, Input, InputNumber, Button, Card, Alert } from "antd";
 import SideBar from "../components/sidebar";
 import "../css/mydiv.css";
 import { Header, Content } from "antd/lib/layout/layout";
@@ -36,6 +36,7 @@ class Register extends React.Component {
     super(props);
     this.state = {
       redirect: false,
+      hideAlert: true,
       data: {
         firstName: "",
         lastName: "",
@@ -49,9 +50,19 @@ class Register extends React.Component {
     };
   }
 
-  onFinish = (values) => {
-    console.log(values);
-    console.log(values.user.name.split(" ")[0]);
+  onFinish = async (values) => {
+    try {
+      console.log("try");
+      let res = await axios.get(
+        "http://localhost:8080/user/username/" + values.user.username
+      );
+      console.log(res);
+      this.setState({ hideAlert: false });
+      return;
+    } catch (e) {
+      console.log("catch");
+      this.setState({ hideAlert: true });
+    }
     let firstname = values.user.name.split(" ")[0];
     let lastname;
     try {
@@ -81,11 +92,11 @@ class Register extends React.Component {
   };
 
   render() {
-    if (this.state.redirect == true) {
-      console.log(sessionStorage.getItem("login"));
-      console.log(this.state.redirect);
-      return <Redirect push to="/login" />;
-    }
+    // if (this.state.redirect == true) {
+    //   console.log(sessionStorage.getItem("login"));
+    //   console.log(this.state.redirect);
+    //   return <Redirect push to="/login" />;
+    // }
 
     return (
       <Layout>
@@ -157,6 +168,11 @@ class Register extends React.Component {
                 </Button>
               </Form.Item>
             </Form>
+            <Alert
+              className={this.state.hideAlert ? "hidden" : null}
+              message="Username ซ้ำ"
+              type="error"
+            />
           </Card>
         </Content>
       </Layout>
