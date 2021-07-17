@@ -116,6 +116,7 @@ class Admin2 extends React.Component {
 
   registerHandler = () => {
     this.setState({ redirect: "register" });
+    return <Redirect push to="/register" />;
   };
 
   render() {
