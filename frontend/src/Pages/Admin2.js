@@ -48,18 +48,27 @@ class Admin2 extends React.Component {
     console.log("here");
     this.state = {
       redirect: "",
-      users: [],
+      usersAdmin: [],
+      usersRescuer: [],
+      usersAll: [],
       data2: {},
       data: {},
       data3: "x",
+      user3: [],
     };
-    axios.get("http://localhost:8080/users").then((ures) => {
-      if (ures.data.type == 1 || ures.data.type == 2) {
-        const users = ures.data.content;
+    axios.get("http://localhost:8080/user/type/1").then((ures) => {
+      const usersAdmin = ures.data.content;
+      this.setState({
+        usersAdmin: ures.data.content,
+      });
+      axios.get("http://localhost:8080/user/type/2").then((ures) => {
+        const usersRescuer = ures.data.content;
         this.setState({
-          users: ures.data.content,
+          usersRescuer: ures.data.content,
+          //usersAll = JSON.parse(usersAdmin, usersRescuer);
+          usersAll: usersAdmin.concat(usersRescuer),
         });
-      }
+      });
     });
   }
 
@@ -129,7 +138,8 @@ class Admin2 extends React.Component {
       return <Redirect push to="/Register" />;
     }
 
-    const options = this.state.users;
+    const options = this.state.usersAll;
+    console.log(options);
     return (
       <Card>
         <h1>ตั้งค่าผู้ใช้งาน</h1>
@@ -154,8 +164,8 @@ class Admin2 extends React.Component {
               onChange={handleChangeName}
             >
               {options.map((option) => (
-                <option name={option.user_name} key={option.id}>
-                  {option.user_name}
+                <option name={option.userName} key={option.id}>
+                  {option.userName}
                 </option>
               ))}
             </Select>
