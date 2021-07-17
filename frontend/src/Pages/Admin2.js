@@ -47,7 +47,7 @@ class Admin2 extends React.Component {
     super();
     console.log("here");
     this.state = {
-      redirect: false,
+      redirect: "",
       users: [],
       data2: {},
       data: {},
@@ -63,7 +63,7 @@ class Admin2 extends React.Component {
 
   onFinish = (values) => {
     this.setState({
-      redirect: true,
+      redirect: "dashboard",
       data: {
         type: values.role,
         name: values.name,
@@ -116,14 +116,15 @@ class Admin2 extends React.Component {
 
   registerHandler = () => {
     this.setState({ redirect: "register" });
-    return <Redirect push to="/register" />;
   };
 
   render() {
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
-    } else if (this.state.redirect == true) {
+    } else if (this.state.redirect == "dashboard") {
       return <Redirect push to="/" />;
+    } else if (this.state.redirect == "register") {
+      return <Redirect push to="/Register" />;
     }
 
     const options = this.state.users;
@@ -192,7 +193,6 @@ class Admin2 extends React.Component {
             </Button>
             <Button
               htmlType="button"
-              disabled
               style={{
                 margin: "8px",
               }}

@@ -85,7 +85,6 @@ class Give extends React.Component {
       lastname = "";
     }
     this.setState({
-      redirect: true,
       dataUser: {
         firstName: firstname,
         lastName: lastname,
@@ -123,6 +122,10 @@ class Give extends React.Component {
             headers: {
               "content-type": "application/json",
             },
+          }).then((res) => {
+            this.setState({
+              redirect: true
+            })
           })
           
 

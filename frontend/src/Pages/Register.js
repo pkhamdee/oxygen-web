@@ -80,7 +80,7 @@ class Register extends React.Component {
         phone: values.user.phone,
         location: values.user.address,
         passwd: values.password,
-        type: 1,
+        type: 2,
       },
     });
     console.log(this.state.data);
