@@ -8,7 +8,7 @@ import { IconContext } from "react-icons";
 
 // ROUTING
 
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 // DATA FILE
 import { SidebarData1 } from "./SlidebarData";
@@ -20,7 +20,10 @@ export default function Navbar() {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
-
+  console.log(sessionStorage.getItem("info"));
+  if (sessionStorage.getItem("info") == null ) {
+    return <Redirect push to="/login" />;
+  }
   let role = JSON.parse(sessionStorage.getItem("info")).type;
   console.log(role);
   if (role == "1") {
