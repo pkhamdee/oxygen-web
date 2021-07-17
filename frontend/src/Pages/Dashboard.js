@@ -16,7 +16,7 @@ class Dashboard extends React.Component {
     users: [],
     openModal: false,
     barcode: null,
-    deviceID: null,
+    deviceId: null,
     info: {}
   };
 
