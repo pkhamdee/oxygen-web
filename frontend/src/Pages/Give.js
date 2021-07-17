@@ -119,7 +119,7 @@ class Give extends React.Component {
         
 
         axios
-          .put("http://localhost:8080/device/" + this.state.deviceId, this.state.dataUpdate, {
+          .put("http://localhost:8080/device/" + this.state.id, this.state.dataUpdate, {
             headers: {
               "content-type": "application/json",
             },
