@@ -114,6 +114,10 @@ class Admin2 extends React.Component {
     });
   };
 
+  registerHandler = () => {
+    this.setState({ redirect: "register" });
+  };
+
   render() {
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
@@ -184,6 +188,16 @@ class Admin2 extends React.Component {
               // onClick={() => this.loginHandler}
             >
               Submit
+            </Button>
+            <Button
+              htmlType="button"
+              disabled
+              style={{
+                margin: "8px",
+              }}
+              onClick={() => this.registerHandler()}
+            >
+              เพิ่มผู้ใช้งาน
             </Button>
           </Form.Item>
         </Form>
