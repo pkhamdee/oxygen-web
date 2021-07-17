@@ -65,7 +65,7 @@ class Admin2 extends React.Component {
         const usersRescuer = ures.data.content;
         this.setState({
           usersRescuer: ures.data.content,
-          //usersAll = JSON.parse(usersAdmin, usersRescuer);
+          //usersAll: JSON.parse(usersAdmin, usersRescuer);
           usersAll: usersAdmin.concat(usersRescuer),
         });
       });
