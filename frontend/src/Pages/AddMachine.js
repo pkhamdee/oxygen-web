@@ -33,14 +33,13 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 class AddMachine extends React.Component {
-  
   constructor() {
     super();
     this.state = {
       redirect: false,
       data: {},
       id: JSON.parse(sessionStorage.getItem("info")).id,
-      data2: {}
+      data2: {},
     };
   }
 
@@ -50,38 +49,42 @@ class AddMachine extends React.Component {
       data: {
         barcode: values.barcode,
         status: 4,
-        userId: this.state.id
+        userId: this.state.id,
       },
     });
 
-    axios.post("http://localhost:8080/device", this.state.data, {
-      headers: {
-        "content-type": "application/json",
-      },
-    }).then((res) => {
-      this.setState({
-        data2: {
-          barcode: values.barcode,
-          status: 4,
-          user: {
-            id: this.state.id
-          }
-        },
-      });
-      axios.put("http://localhost:8080/device/" + res.data.id, this.state.data2, {
+    axios
+      .post("http://localhost:8080/device", this.state.data, {
         headers: {
           "content-type": "application/json",
         },
+      })
+      .then((res) => {
+        this.setState({
+          data2: {
+            barcode: values.barcode,
+            status: 4,
+            user: {
+              id: this.state.id,
+            },
+          },
+        });
+        axios.put(
+          "http://localhost:8080/device/" + res.data.id,
+          this.state.data2,
+          {
+            headers: {
+              "content-type": "application/json",
+            },
+          }
+        );
       });
-    });
   };
 
   render() {
-
     if (sessionStorage.getItem("login") !== "true") {
       return <Redirect push to="/login" />;
     } else if (this.state.redirect == true) {
-     
       return <Redirect push to="/" />;
     }
 
