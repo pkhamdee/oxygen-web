@@ -16,7 +16,7 @@ class Dashboard extends React.Component {
     users: [],
     openModal: false,
     barcode: null,
-    deviceId: null,
+    deviceID: null,
     info: {}
   };
 
@@ -48,7 +48,7 @@ class Dashboard extends React.Component {
       let keyArray = Object.keys(device);
       return keyArray.map((header, sindex) => {
         switch (header) {
-          case "deviceId":
+          case "id":
             return <th key={sindex}> # </th>;
             break;
           case "barcode":
@@ -85,6 +85,12 @@ class Dashboard extends React.Component {
     this.setState({ openModal: !this.state.openModal });
   }
 
+  handleModalClose(){
+    sessionStorage.setItem('barcode', '');
+    sessionStorage.setItem('deviceId', '');
+    this.handleModalShowHide();
+  }
+
   handleReturnDevice(rbarcode, rdeviceId) {
     this.handleModalShowHide();
     sessionStorage.setItem('barcode', rbarcode);
@@ -92,6 +98,7 @@ class Dashboard extends React.Component {
   }
 
   returnDevice(barcode, deviceId) {
+    let phonenum = JSON.parse(sessionStorage.getItem('info')).phone;
     if (barcode && deviceId) {
         let rheader = {
          headers: {
@@ -100,11 +107,15 @@ class Dashboard extends React.Component {
         };
         let rdata = {
             status: "4",
-            name: "ศูนย์", //Base's tel number
-            deviceId: deviceId,
-            barcode: barcode
+            name: phonenum,
+            id: deviceId,
+            barcode: barcode,
+            user: {
+                id: JSON.parse(sessionStorage.getItem('info')).id,
+                phone: phonenum
+            },
         };
-        axios.post("http://localhost:8080/device", rdata, rheader);
+        axios.put("http://localhost:8080/device/" + deviceId , rdata, rheader);
     }
     sessionStorage.setItem('barcode', '');
     sessionStorage.setItem('deviceId', '');
@@ -113,11 +124,11 @@ class Dashboard extends React.Component {
 
   renderTableData() {
     return this.state.devices.map((device, index) => {
-      const { length, deviceId, barcode, name, status } = device; //destructuring
+      const { length, id, barcode, name, status } = device; //destructuring
       return (
-        <tr key={deviceId} bgcolor={status == 2 ? "grey" : "white"}>
+        <tr key={id} bgcolor={status == 2 ? "grey" : "white"}>
           <td>
-            <font color={status == 4 ? "grey" : "white"}>{deviceId}</font>
+            <font color={status == 4 ? "grey" : "white"}>{id}</font>
           </td>
           <td>
             <font color={status == 4 ? "grey" : "white"}>{name}</font>
@@ -129,7 +140,7 @@ class Dashboard extends React.Component {
             <Button
               variant={status == 2 ? "outline-light" : "outline-error"}
               size="sm"
-              onClick={() => this.handleReturnDevice(barcode, deviceId)}
+              onClick={() => this.handleReturnDevice(barcode, id)}
               disabled={status == 4}
             >
               Return
@@ -141,7 +152,7 @@ class Dashboard extends React.Component {
               size="sm"
               value={barcode}
               onClick={() => {
-                this.giveHandler(barcode, deviceId);
+                this.giveHandler(barcode, id);
               }}
               disabled={status == 2}
             >
@@ -167,14 +178,14 @@ class Dashboard extends React.Component {
     return (
       <div>
           <Modal show={this.state.openModal}>
-              <Modal.Header closeButton onClick={() => this.handleModalShowHide()}>
+              <Modal.Header closeButton onClick={() => this.handleModalClose()}>
               <Modal.Title>ยืนยันการคืนอุปกรณ์</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                   ยืนยันการคืนอุปกรณ์หมายเลขเครื่อง {sessionStorage.getItem('barcode')}
               </Modal.Body>
               <Modal.Footer>
-              <Button variant="secondary" onClick={() => this.handleModalShowHide()}>
+              <Button variant="secondary" onClick={() => this.handleModalClose()}>
                   Cancel
               </Button>
               <Button variant="primary" onClick={() => this.returnDevice(sessionStorage.getItem('barcode'), sessionStorage.getItem('deviceId'))}>
