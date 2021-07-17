@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
-import { Form, Input, InputNumber, Button, Card, Layout } from "antd";
+import { Form, Input, InputNumber, Button, Card, Layout, Alert } from "antd";
 import SideBar from "../components/sidebar";
 import "../css/mydiv.css";
 import { Header, Body, Content } from "antd/lib/layout/layout";
@@ -41,6 +41,7 @@ class AddMachine extends React.Component {
       id: JSON.parse(sessionStorage.getItem("info")).id,
       phone: JSON.parse(sessionStorage.getItem("info")).phone,
       data2: {},
+      shouldHide: true
     };
   }
 
@@ -82,7 +83,9 @@ class AddMachine extends React.Component {
           }
         )
       }).then(res => {
-        console.log(res)
+        this.setState({
+          shouldHide: false
+        })
       });
   };
 
@@ -136,14 +139,16 @@ class AddMachine extends React.Component {
         </Form.Item> */}
 
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-            >
+            <Button type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
         </Form>
+        <Alert
+          className={this.state.shouldHide ? "hidden" : null}
+          message="เพิ่มเครื่องใหม่แล้ว"
+          type="success"
+        />
       </Card>
       //   </Content>
       // </Layout>
