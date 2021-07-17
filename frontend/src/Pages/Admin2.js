@@ -54,10 +54,12 @@ class Admin2 extends React.Component {
       data3: "x",
     };
     axios.get("http://localhost:8080/users").then((ures) => {
-      const users = ures.data.content;
-      this.setState({
-        users: ures.data.content,
-      });
+      if (ures.data.type == 1 || ures.data.type == 2) {
+        const users = ures.data.content;
+        this.setState({
+          users: ures.data.content,
+        });
+      }
     });
   }
 
@@ -152,8 +154,8 @@ class Admin2 extends React.Component {
               onChange={handleChangeName}
             >
               {options.map((option) => (
-                <option name={option.firstName} key={option.id}>
-                  {option.firstName + " " + option.lastName}
+                <option name={option.user_name} key={option.id}>
+                  {option.user_name}
                 </option>
               ))}
             </Select>
