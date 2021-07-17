@@ -8,6 +8,7 @@ import { Header, Content } from "antd/lib/layout/layout";
 import { Layout } from "antd";
 import { Redirect, Link } from "react-router-dom";
 import axios from "axios";
+import { Modal } from "react-bootstrap";
 
 const layout = {
   labelCol: {
@@ -37,6 +38,7 @@ class Register extends React.Component {
     this.state = {
       redirect: false,
       hideAlert: true,
+      shouldHide: true,
       data: {
         firstName: "",
         lastName: "",
@@ -62,6 +64,7 @@ class Register extends React.Component {
     } catch (e) {
       console.log("catch");
       this.setState({ hideAlert: true });
+      this.setState({ shouldHide: false });
     }
     let firstname = values.user.name.split(" ")[0];
     let lastname;
@@ -99,6 +102,7 @@ class Register extends React.Component {
     // }
 
     return (
+     <div>
       <Layout>
         <Content>
           <Card>
@@ -173,9 +177,15 @@ class Register extends React.Component {
               message="Username ซ้ำ"
               type="error"
             />
+            <Alert
+              className={this.state.shouldHide ? "hidden" : null}
+              message="เพิ่มผู้ใช้ใหม่แล้ว"
+              type="success"
+            />
           </Card>
         </Content>
       </Layout>
+     </div>
     );
   }
 }
