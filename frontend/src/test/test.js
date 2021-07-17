@@ -16,8 +16,8 @@ const dataDevice = {
   name: "",
   serialNo: "",
   status: 4,
-  userId: 3
-}
+  userId: 3,
+};
 
 const dataUpdate = {
   barcode: "bbbbbb",
@@ -25,18 +25,15 @@ const dataUpdate = {
   serialNo: "",
   status: 4,
   user: {
-    id: 3
-  }
-}
+    id: 3,
+  },
+};
 
 // axios.post("http://localhost:8080/user", data, {
 //   headers: {
 //     "content-type": "application/json",
 //   },
 // }).then(console.log);
-
-
-
 
 // axios
 //   .post("http://localhost:8080/device", dataDevice, {
@@ -46,8 +43,8 @@ const dataUpdate = {
 //   })
 //   .then(console.log);
 
-
-axios.put("http://localhost:8080/device/2", dataUpdate, {
+axios
+  .put("http://localhost:8080/device/2", dataUpdate, {
     headers: {
       "content-type": "application/json",
     },

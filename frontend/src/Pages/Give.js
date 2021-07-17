@@ -71,7 +71,7 @@ class Give extends React.Component {
         status: 2,
         name: null,
         barcode: props.match.params.barcode,
-        userId: {},
+        userId: {}
       },
     };
   }
@@ -104,6 +104,7 @@ class Give extends React.Component {
         },
       })
       .then((res) => {
+        
         this.setState({
           dataUpdate: {
             // deviceId: this.props.match.params.id,
@@ -115,16 +116,16 @@ class Give extends React.Component {
             },
           },
         });
+        
 
-        axios.put(
-          "http://localhost:8080/device/" + this.state.id,
-          this.state.dataUpdate,
-          {
+        axios
+          .put("http://localhost:8080/device/" + this.state.id, this.state.dataUpdate, {
             headers: {
               "content-type": "application/json",
             },
-          }
-        );
+          })
+          
+
       });
   };
 
@@ -176,7 +177,7 @@ class Give extends React.Component {
           <Form.Item name={["user", "phone"]} label="เบอร์โทร">
             <Input />
           </Form.Item>
-          <Form.Item name={["user", "address"]} label="ที่อยู่">
+          <Form.Item name={["user","address"]} label="ที่อยู่">
             <Input.TextArea />
             {/* <button>map</button> */}
           </Form.Item>
