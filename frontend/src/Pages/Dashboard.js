@@ -48,9 +48,9 @@ class Dashboard extends React.Component {
       let keyArray = Object.keys(device);
       return keyArray.map((header, sindex) => {
         switch (header) {
-          case "id":
-            return <th key={sindex}> # </th>;
-            break;
+          // case "id":
+          //   return <th key={sindex}> # </th>;
+          //   break;
           case "barcode":
             return <th key={sindex}> หมายเลขเครื่อง </th>;
             break;
@@ -127,9 +127,9 @@ class Dashboard extends React.Component {
       const { length, id, barcode, name, status } = device; //destructuring
       return (
         <tr key={id} bgcolor={status == 2 ? "grey" : "white"}>
-          <td>
+          {/* <td>
             <font color={status == 4 ? "grey" : "white"}>{id}</font>
-          </td>
+          </td> */}
           <td>
             <font color={status == 4 ? "grey" : "white"}>{name}</font>
           </td>
