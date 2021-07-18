@@ -1,0 +1,24 @@
+ul{
+    list-style-type:none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+}
+li{
+font-size: 15px;
+}
+.nav-card{
+   margin-top: 40px;
+    border-color:#F4F7FC;
+   border-radius: 20px;
+}
+body{
+    background-color: #F4F7FC;
+}
+.page-card{
+ 
+        border-radius: 20px;
+        margin-top: 20px;
+    
+}

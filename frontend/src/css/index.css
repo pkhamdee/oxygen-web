@@ -1,0 +1,16 @@
+body{
+    background-color: #F4F7FC;
+}
+.page-card{
+ 
+        border-radius: 20px;
+        margin-top: 20px;
+    
+}
+
+
+.editable-row .ant-form-item-explain {
+    position: absolute;
+    top: 100%;
+    font-size: 12px;
+  }
